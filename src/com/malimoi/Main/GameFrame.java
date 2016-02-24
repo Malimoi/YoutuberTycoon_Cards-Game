@@ -23,6 +23,8 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import com.malimoi.cards.Card;
+
 @SuppressWarnings("serial")
 public class GameFrame extends JFrame{
 	public static GraphicsEnvironment graphicsEnvironment = GraphicsEnvironment.getLocalGraphicsEnvironment();
@@ -48,8 +50,10 @@ public class GameFrame extends JFrame{
 	public static List<JPanel> cards_list = new ArrayList<JPanel>();
 	public static List<JPanel> twiit_list = new ArrayList<JPanel>();
 	
-	public static int playerCards = 0;
-	public static int advCards = 0;
+	public static int nbPlayerCards = 0;
+	public static int nbAdvCards = 0;
+	public static List<Card> playerCards = new ArrayList<Card>();
+	//public static List<Card> advCards = new ArrayList<Card>();
 	
 	public GameFrame(){
 		Boolean size = false;
@@ -81,13 +85,23 @@ public class GameFrame extends JFrame{
 		this.setVisible(true);
 	}
 	
-	public void UpdateContent(){
+	public void InitializeContent(){
 		
 		for (int i = 0;i<5;i++){
 			Random r = new Random();
-			String img_path = MainClient.cards_list.get(r.nextInt(29)).getPath();
-			System.out.println(img_path);
-			JPanel card = new AddCards(img_path, CARDS_WIDTH, CARDS_HEIGHT);
+			Card card = MainClient.cards_list.get(r.nextInt(29));
+			playerCards.add(card);
+			System.out.println(card.getPath());
+		}
+		
+		
+	}
+	
+	public void UpdateContent(){
+		
+		for (int i = 0;i<playerCards.size();i++){
+			
+			JPanel card = new AddCards(playerCards.get(i).getPath(), CARDS_WIDTH, CARDS_HEIGHT);
 			card.addMouseListener(new MouseAdapter() {
 
 				@Override
@@ -108,7 +122,8 @@ public class GameFrame extends JFrame{
 				public void mousePressed(MouseEvent e) {
 					for (int a = 0;a<cards_list.size();a++){
 						if (card.equals(cards_list.get(a))){
-							cards_list.remove(a);
+							cards_list.clear();
+							playerCards.remove(a);
 							content.removeAll();
 						}					
 					}
@@ -173,6 +188,8 @@ public class GameFrame extends JFrame{
 			content.add(players_content);
 			
 		}
+		
+		content.updateUI();
 		
 	}
 	
