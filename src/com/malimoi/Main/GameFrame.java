@@ -24,6 +24,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import com.malimoi.cards.Card;
+import com.malimoi.players.Player;
 
 @SuppressWarnings("serial")
 public class GameFrame extends JFrame{
@@ -51,6 +52,8 @@ public class GameFrame extends JFrame{
 	public static JPanel liveAdvCard = new AddCards("images/cards/DOS_DE_CARTE.png", 280, 403);
 	
 	// -
+	public Player adversaire;
+	
 	public static List<JPanel> cards_list = new ArrayList<JPanel>();
 	public static List<JPanel> twiit_list = new ArrayList<JPanel>();
 	
@@ -60,7 +63,9 @@ public class GameFrame extends JFrame{
 	public static int pointerCard = -1;
 	//public static List<Card> advCards = new ArrayList<Card>();
 	
-	public GameFrame(){
+	public GameFrame(Player adversaire){
+		this.adversaire = adversaire;
+		
 		Boolean size = true;
 		
 		if (!size){

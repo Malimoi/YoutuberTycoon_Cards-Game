@@ -21,6 +21,7 @@ import com.malimoi.cards.InfosYoutuber;
 import com.malimoi.cards.enums.Grades;
 import com.malimoi.cards.enums.TypesOfCards;
 import com.malimoi.cards.enums.TypesOfThemes;
+import com.malimoi.players.Player;
 
 import de.javasoft.plaf.synthetica.SyntheticaPlainLookAndFeel;
 
@@ -51,10 +52,11 @@ public class MainClient {
 	public static String str_send = "";
 	
 	/*
-	 * CONSTANT
+	 * Variables players
 	 */
 	public static List<Card> cards_list = new ArrayList<Card>();
 	public static List<Card> playerCards = new ArrayList<Card>();
+	public static Player player = new Player("Malimoi", "#01FE12", 1);
 	
 	/*
 	 * ICI : PRESENT QUE DANS LES VERSIONS TEST POUR NE PAS PASSER PAS LE LAUCHER / SERVER
@@ -171,7 +173,7 @@ public class MainClient {
      		e.printStackTrace();
      	} 
          
-         new GameFrame();
+         new GameFrame(new Player("KevinX", "#FEDC01", 1));
          
          /*
          JFrame frame = new JFrame();
