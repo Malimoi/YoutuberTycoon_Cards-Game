@@ -24,6 +24,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import com.malimoi.cards.Card;
+import com.malimoi.cards.enums.TypesOfThemes;
 import com.malimoi.players.Player;
 
 @SuppressWarnings("serial")
@@ -53,6 +54,7 @@ public class GameFrame extends JFrame{
 	
 	// -
 	public Player adversaire;
+	public List<Player> listPlayers;
 	
 	public static List<JPanel> cards_list = new ArrayList<JPanel>();
 	public static List<JPanel> twiit_list = new ArrayList<JPanel>();
@@ -61,10 +63,15 @@ public class GameFrame extends JFrame{
 	public static int nbAdvCards = 0;
 	public static List<Card> playerCardsHand = new ArrayList<Card>();
 	public static int pointerCard = -1;
+	
+	public int playerFollowers = 100;
+	public int advFollowers = 100;
 	//public static List<Card> advCards = new ArrayList<Card>();
 	
 	public GameFrame(Player adversaire){
 		this.adversaire = adversaire;
+		this.listPlayers.add(MainClient.player);
+		this.listPlayers.add(adversaire);
 		
 		Boolean size = true;
 		
@@ -241,25 +248,12 @@ public class GameFrame extends JFrame{
 		
 		InitializeBackcards();
 		
-		/*
-		 * Profils
-		 */
-		
-		// -Player
-		
-		
-		
-		// -Adversaire
-		
-		
 		for (int i = 0;i<2;i++){
 		
 			JPanel players_content = new COLOR(Color.WHITE, true, 300, 650);
 			players_content.setBounds(LARGEUR/2 - TWIIT_WIDTH/2 - 10 - 300 + i*(300+2*10+TWIIT_WIDTH), 10, 300, 650);
 			
-			content.add(players_content);
-			
-			
+			content.add(players_content);		
 			
 		}
 		

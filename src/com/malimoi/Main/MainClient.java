@@ -56,7 +56,7 @@ public class MainClient {
 	 */
 	public static List<Card> cards_list = new ArrayList<Card>();
 	public static List<Card> playerCards = new ArrayList<Card>();
-	public static Player player = new Player("Malimoi", "#01FE12", 1);
+	public static Player player = new Player("Malimoi", "#01FE12", 1, 1);
 	
 	/*
 	 * ICI : PRESENT QUE DANS LES VERSIONS TEST POUR NE PAS PASSER PAS LE LAUCHER / SERVER
@@ -173,7 +173,7 @@ public class MainClient {
      		e.printStackTrace();
      	} 
          
-         new GameFrame(new Player("KevinX", "#FEDC01", 1));
+         new GameFrame(new Player("KevinX", "#FEDC01", 1, 1));
          
          /*
          JFrame frame = new JFrame();
