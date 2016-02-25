@@ -16,7 +16,9 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 import javax.imageio.ImageIO;
@@ -25,6 +27,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import com.malimoi.cards.Card;
+import com.malimoi.cards.enums.TypesOfCards;
 import com.malimoi.cards.enums.TypesOfThemes;
 import com.malimoi.players.Player;
 
@@ -59,6 +62,8 @@ public class GameFrame extends JFrame{
 	
 	public static List<JPanel> cards_list = new ArrayList<JPanel>();
 	public static List<JPanel> twiit_list = new ArrayList<JPanel>();
+	public static List<Player> twiitListPlayer = new ArrayList<Player>();
+	public static List<Card> twiitListCard = new ArrayList<Card>();
 	
 	public static int nbPlayerCards = 0;
 	public static int nbAdvCards = 0;
@@ -176,6 +181,10 @@ public class GameFrame extends JFrame{
 							
 							cards_list.clear();
 							lastPlayerCard = playerCardsHand.get(a);
+							if (lastPlayerCard.getType().equals(TypesOfCards.YOUTUBER)){
+								twiitListCard.add(lastPlayerCard);
+								twiitListPlayer.add(MainClient.player);
+							}							
 							playerCardsHand.remove(a);
 							content.removeAll();
 						}					
@@ -204,12 +213,12 @@ public class GameFrame extends JFrame{
 		 * Fake twiits
 		 */
 		
-		for (int i = 0;i<2;i++){		
+		for (int i = 0;i<twiitListCard.size();i++){		
 			JPanel t = new COLOR(Color.WHITE, true, TWIIT_WIDTH, TWIIT_HEIGHT);	
 			t.setLayout(null);
 			t.setBounds(LARGEUR/2 - TWIIT_WIDTH/2, 10 + i*(TWIIT_HEIGHT-1), TWIIT_WIDTH, TWIIT_HEIGHT);
 			
-			JPanel profil = new COLOR(Color.BLUE, false, 0, 0);
+			JPanel profil = new AddImages("images/profils/"+twiitListCard.get(i).getName()+".png", 50, 50);
 			profil.setBounds(10, 10, 50, 50);
 			t.add(profil);
 			JPanel rt = new AddImages("images/RT_GRAY.png", 20, 20);
@@ -220,7 +229,7 @@ public class GameFrame extends JFrame{
 			t.add(heart);
 			JLabel name = new JLabel();
 			name.setFont(new Font("Arial", Font.BOLD, 15));
-			name.setText("The Malimoi");
+			name.setText(twiitListCard.get(i).getName());
 			name.setForeground(Color.DARK_GRAY);
 			name.setHorizontalAlignment(JLabel.LEFT);
 			name.setBounds(10+50+5, 10, 300, 18);
@@ -232,8 +241,6 @@ public class GameFrame extends JFrame{
 			msg_l1.setHorizontalAlignment(JLabel.LEFT);
 			msg_l1.setBounds(10+50+5, 30, TWIIT_WIDTH-65, 15);
 			t.add(msg_l1);
-			
-			twiit_list.add(t);
 			
 			content.add(t);
 		}	
