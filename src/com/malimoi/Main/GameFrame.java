@@ -43,8 +43,12 @@ public class GameFrame extends JFrame{
 	public static final int CARDS_WIDTH = 150;
 	public static final int CARDS_HEIGHT = 216;
 	
+	public static Card lastPlayerCard = MainClient.cards_list.get(0);
+	
 	// -CONTENT
 	public static JPanel content = new JPanel();
+	public static JPanel livePlayerCard = new AddCards("images/cards/DOS_DE_CARTE.png", 280, 403);
+	public static JPanel liveAdvCard = new AddCards("images/cards/DOS_DE_CARTE.png", 280, 403);
 	
 	// -
 	public static List<JPanel> cards_list = new ArrayList<JPanel>();
@@ -53,10 +57,11 @@ public class GameFrame extends JFrame{
 	public static int nbPlayerCards = 0;
 	public static int nbAdvCards = 0;
 	public static List<Card> playerCards = new ArrayList<Card>();
+	public static int pointerCard = -1;
 	//public static List<Card> advCards = new ArrayList<Card>();
 	
 	public GameFrame(){
-		Boolean size = false;
+		Boolean size = true;
 		
 		if (!size){
 			HAUTEUR=720;
@@ -89,40 +94,79 @@ public class GameFrame extends JFrame{
 		
 		for (int i = 0;i<5;i++){
 			Random r = new Random();
-			Card card = MainClient.cards_list.get(r.nextInt(29));
+			Card card = MainClient.cards_list.get(r.nextInt(29)+1);
 			playerCards.add(card);
-			System.out.println(card.getPath());
+			System.out.println(card.getName());
 		}
 		
+		
+	}
+	
+	public void InitializeBackcards(){
+		
+		if (pointerCard>=0){
+			livePlayerCard = new AddCards(playerCards.get(pointerCard).getPath(), 280, 403);
+		}else{
+			livePlayerCard = new AddCards(lastPlayerCard.getPath(), 280, 403);
+		}		
+		liveAdvCard = new AddCards("images/cards/DOS_DE_CARTE.png", 280, 403);
+		
+		livePlayerCard.setBounds(LARGEUR/2 - TWIIT_WIDTH/2 - 300 + 0*(300+2*10+TWIIT_WIDTH), 650 - 403, 280, 403);	
+		liveAdvCard.setBounds(LARGEUR/2 - TWIIT_WIDTH/2 - 300 + 1*(300+2*10+TWIIT_WIDTH), 650 - 403, 280, 403);
+		
+		content.add(livePlayerCard);	
+		content.add(liveAdvCard);
 		
 	}
 	
 	public void UpdateContent(){
 		
 		for (int i = 0;i<playerCards.size();i++){
-			
 			JPanel card = new AddCards(playerCards.get(i).getPath(), CARDS_WIDTH, CARDS_HEIGHT);
 			card.addMouseListener(new MouseAdapter() {
 
 				@Override
 				public void mouseEntered(MouseEvent e) {
-					card.setBounds(card.getX(), HAUTEUR - CARDS_HEIGHT - 100, CARDS_WIDTH, CARDS_HEIGHT);
-					
-					content.updateUI();
+					//card.setBounds(card.getX(), HAUTEUR - CARDS_HEIGHT - 100, CARDS_WIDTH, CARDS_HEIGHT);
+					for (int a = 0;a<cards_list.size();a++){
+						if (card.equals(cards_list.get(a))){
+							if (pointerCard != a){
+								pointerCard = a;
+								System.out.println("pointerCard = "+a);
+								content.removeAll();
+								cards_list.clear();
+								UpdateContent();
+							}
+								
+							//content.remove(livePlayerCard);
+							//livePlayerCard = new AddCards(playerCards.get(a).getPath(), 280, 403);;
+							//livePlayerCard.setBounds(LARGEUR/2 - TWIIT_WIDTH/2 - 300 + 0*(300+2*10+TWIIT_WIDTH), 650 - 403, 280, 403);
+							//content.add(livePlayerCard);
+						}					
+					}
+							
+					//content.updateUI();
 				}
 				
 				@Override
 				public void mouseExited(MouseEvent e) {
-					card.setBounds(card.getX(), HAUTEUR-CARDS_HEIGHT-30, CARDS_WIDTH, CARDS_HEIGHT);
-					
-					content.updateUI();
+					//card.setBounds(card.getX(), HAUTEUR - CARDS_HEIGHT-30, CARDS_WIDTH, CARDS_HEIGHT);
+					pointerCard = -1;
+					//InitializeBackcards();
+					cards_list.clear();
+					content.removeAll();
+					UpdateContent();
+					//content.updateUI();
 				}
 				
 				@Override
 				public void mousePressed(MouseEvent e) {
 					for (int a = 0;a<cards_list.size();a++){
 						if (card.equals(cards_list.get(a))){
+							pointerCard = -1;
+							
 							cards_list.clear();
+							lastPlayerCard = playerCards.get(a);
 							playerCards.remove(a);
 							content.removeAll();
 						}					
@@ -131,7 +175,16 @@ public class GameFrame extends JFrame{
 				}
 
             });
-			card.setBounds(LARGEUR/2 + TWIIT_WIDTH/2 - i*80 - CARDS_WIDTH, HAUTEUR - CARDS_HEIGHT - 30, CARDS_WIDTH, CARDS_HEIGHT);
+			if (pointerCard>=0){
+				if (i==pointerCard){
+					card.setBounds(LARGEUR/2 + TWIIT_WIDTH/2 - i*80 - CARDS_WIDTH, HAUTEUR - CARDS_HEIGHT - 100, CARDS_WIDTH, CARDS_HEIGHT);
+				}else{
+					card.setBounds(LARGEUR/2 + TWIIT_WIDTH/2 - i*80 - CARDS_WIDTH, HAUTEUR - CARDS_HEIGHT - 30, CARDS_WIDTH, CARDS_HEIGHT);
+				}
+				
+			}else{
+				card.setBounds(LARGEUR/2 + TWIIT_WIDTH/2 - i*80 - CARDS_WIDTH, HAUTEUR - CARDS_HEIGHT - 30, CARDS_WIDTH, CARDS_HEIGHT);
+			}
 			
 			content.add(card);
 			
@@ -180,12 +233,18 @@ public class GameFrame extends JFrame{
 		/*
 		 * Players
 		 */
+		
+		InitializeBackcards();
+		
+		
 		for (int i = 0;i<2;i++){
 		
 			JPanel players_content = new COLOR(Color.WHITE, true, 300, 650);
 			players_content.setBounds(LARGEUR/2 - TWIIT_WIDTH/2 - 10 - 300 + i*(300+2*10+TWIIT_WIDTH), 10, 300, 650);
 			
 			content.add(players_content);
+			
+			
 			
 		}
 		
@@ -241,6 +300,10 @@ public class GameFrame extends JFrame{
 			} catch (IOException ex) {
 				ex.printStackTrace();
 			}
+		}
+		
+		public String getPath(){
+			return path;
 		}
 
 	}

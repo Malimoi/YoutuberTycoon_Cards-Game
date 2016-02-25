@@ -70,6 +70,7 @@ public class MainClient {
     	 * CARDS-LIST
     	 */
     	
+    	cards_list.add(new Card("Dos de carte", TypesOfCards.BACK, null, "images/cards/DOS_DE_CARTE.png", 0));
     	cards_list.add(new Card("Amandine Cuisine", TypesOfCards.YOUTUBER, new InfosYoutuber(200, 3, 1, 
     			TypesOfThemes.VIEPRATIQUE_STYLE_BEAUTE, Grades.BASE, 0), "images/cards/Amandine Cuisine.png", 1));
     	cards_list.add(new Card("Anthony-Fitness", TypesOfCards.YOUTUBER, new InfosYoutuber(350, 5, 2, TypesOfThemes.SPORT, Grades.BASE, 0),
