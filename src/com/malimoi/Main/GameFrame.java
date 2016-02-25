@@ -91,10 +91,6 @@ public class GameFrame extends JFrame{
 		
 		UpdateContent();
 		
-		//content.remove(cards_list.get(2));
-		
-		//content.updateUI();
-		
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setContentPane(content);
 		this.setSize(LARGEUR, HAUTEUR);
@@ -138,36 +134,35 @@ public class GameFrame extends JFrame{
 
 				@Override
 				public void mouseEntered(MouseEvent e) {
-					//card.setBounds(card.getX(), HAUTEUR - CARDS_HEIGHT - 100, CARDS_WIDTH, CARDS_HEIGHT);
+					
 					for (int a = 0;a<cards_list.size();a++){
+						
 						if (card.equals(cards_list.get(a))){
+							
 							if (pointerCard != a){
+								
 								pointerCard = a;
 								System.out.println("pointerCard = "+a);
 								content.removeAll();
 								cards_list.clear();
 								UpdateContent();
-							}
 								
-							//content.remove(livePlayerCard);
-							//livePlayerCard = new AddCards(playerCards.get(a).getPath(), 280, 403);;
-							//livePlayerCard.setBounds(LARGEUR/2 - TWIIT_WIDTH/2 - 300 + 0*(300+2*10+TWIIT_WIDTH), 650 - 403, 280, 403);
-							//content.add(livePlayerCard);
-						}					
-					}
+							}
 							
-					//content.updateUI();
+						}	
+						
+					}
+					
 				}
 				
 				@Override
 				public void mouseExited(MouseEvent e) {
-					//card.setBounds(card.getX(), HAUTEUR - CARDS_HEIGHT-30, CARDS_WIDTH, CARDS_HEIGHT);
+
 					pointerCard = -1;
-					//InitializeBackcards();
+					
 					cards_list.clear();
 					content.removeAll();
 					UpdateContent();
-					//content.updateUI();
 				}
 				
 				@Override
