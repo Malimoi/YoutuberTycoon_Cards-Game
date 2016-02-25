@@ -1,5 +1,6 @@
 package com.malimoi.Main;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -54,7 +55,7 @@ public class GameFrame extends JFrame{
 	
 	// -
 	public Player adversaire;
-	public List<Player> listPlayers;
+	public List<Player> listPlayers = new ArrayList<Player>();
 	
 	public static List<JPanel> cards_list = new ArrayList<JPanel>();
 	public static List<JPanel> twiit_list = new ArrayList<JPanel>();
@@ -64,8 +65,10 @@ public class GameFrame extends JFrame{
 	public static List<Card> playerCardsHand = new ArrayList<Card>();
 	public static int pointerCard = -1;
 	
-	public int playerFollowers = 100;
-	public int advFollowers = 100;
+	public static int playerFollowers = 100;
+	public static int advFollowers = 100;
+	public static int playerViews = 0;
+	public static int advViews = 0;
 	
 	public GameFrame(Player adversaire){
 		this.adversaire = adversaire;
@@ -197,6 +200,10 @@ public class GameFrame extends JFrame{
 			cards_list.add(card);
 		}
 		
+		/*
+		 * Fake twiits
+		 */
+		
 		for (int i = 0;i<2;i++){		
 			JPanel t = new COLOR(Color.WHITE, true, TWIIT_WIDTH, TWIIT_HEIGHT);	
 			t.setLayout(null);
@@ -243,9 +250,88 @@ public class GameFrame extends JFrame{
 		InitializeBackcards();
 		
 		for (int i = 0;i<2;i++){
+			
+			Player p = MainClient.player; //Initialize
+			int followers = 0;
+			int views = 0;
+			String apercu = "Dernière carte joué:";
+			
+			if (i==0){
+				p=MainClient.player;
+				followers=playerFollowers;
+				views=playerViews;
+				if (pointerCard>=0){
+					apercu= "Aperçu:";
+				}
+			}else{
+				p=adversaire;
+				followers=advFollowers;
+				views=advViews;
+			}	
 		
 			JPanel players_content = new COLOR(Color.WHITE, true, 300, 650);
+			players_content.setLayout(null);
 			players_content.setBounds(LARGEUR/2 - TWIIT_WIDTH/2 - 10 - 300 + i*(300+2*10+TWIIT_WIDTH), 10, 300, 650);
+			
+			JPanel playerProfil = new COLOR(Color.decode(p.getColor()), false, 65, 65);
+			playerProfil.setLayout(new BorderLayout());
+			playerProfil.setBounds(10, 10, 65, 65);
+			
+			JLabel letter = new JLabel();
+			letter.setFont(new Font("Tahoma", Font.PLAIN, 50));
+			letter.setText((p.getName().toCharArray()[0]+"").toUpperCase());
+			letter.setForeground(Color.WHITE);
+			letter.setHorizontalAlignment(JLabel.CENTER);
+			letter.setPreferredSize(new Dimension(65, 65));
+			
+			playerProfil.add(letter, BorderLayout.CENTER);
+			
+			JLabel name = new JLabel();
+			name.setFont(new Font("Arial", Font.BOLD, 18));
+			name.setText(p.getName());
+			name.setForeground(Color.DARK_GRAY);
+			name.setHorizontalAlignment(JLabel.LEFT);
+			name.setBounds(10+65+5, 10, 300, 22);
+			
+			JLabel follow = new JLabel();
+			follow.setFont(new Font("Tahoma", Font.PLAIN, 13));
+			follow.setText("FOLLOWERS");
+			follow.setForeground(Color.GRAY);
+			follow.setHorizontalAlignment(JLabel.LEFT);
+			follow.setBounds(10+65+5, 10+20+8, 300, 15);
+			JLabel nbFollow = new JLabel();
+			nbFollow.setFont(new Font("Tahoma", Font.PLAIN, 28));
+			nbFollow.setText(followers+"");
+			nbFollow.setForeground(Color.decode("#575757"));
+			nbFollow.setHorizontalAlignment(JLabel.LEFT);
+			nbFollow.setBounds(10+65+5, 30+17, 300, 34);
+			
+			JPanel minia = new AddImages("images/miniatures/"+MainClient.THEMES_IMAGES_PATH[p.getThemeId()-1], 165, 95);
+			minia.setBounds(10, 30+17+28+25, 165, 95);
+			JPanel viewsImg = new AddImages("images/miniatures/views.png", 25, 25);
+			viewsImg.setBounds(165+5+10, 30+17+28+25, 25, 25);
+			JLabel nbViews = new JLabel();
+			nbViews.setFont(new Font("Tahoma", Font.PLAIN, 21));
+			nbViews.setText(views+"");
+			nbViews.setForeground(Color.decode("#A8A8A7"));
+			nbViews.setHorizontalAlignment(JLabel.LEFT);
+			nbViews.setBounds(165+5+10+25, 30+17+28+25, 300, 25);
+			
+			JLabel apercuCard = new JLabel();
+			apercuCard.setFont(new Font("Tahoma", Font.BOLD, 19));
+			apercuCard.setText(apercu);
+			apercuCard.setForeground(Color.DARK_GRAY);
+			apercuCard.setHorizontalAlignment(JLabel.LEFT);
+			apercuCard.setBounds(10, 650-403-16-20, 300, 24);
+			
+			players_content.add(playerProfil);
+			players_content.add(name);
+			players_content.add(follow);
+			players_content.add(nbFollow);
+			players_content.add(minia);
+			players_content.add(viewsImg);
+			players_content.add(nbViews);	
+			players_content.add(apercuCard);
 			
 			content.add(players_content);		
 			

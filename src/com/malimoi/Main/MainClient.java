@@ -52,6 +52,11 @@ public class MainClient {
 	public static String str_send = "";
 	
 	/*
+	 * CONSTANT
+	 */
+	public static final String[] THEMES_IMAGES_PATH = {"HUMOUR.png","STYLE.png","SPORT.png","MUSIQUE.png","GAMING.png","EDUCATION.png"};
+	
+	/*
 	 * Variables players
 	 */
 	public static List<Card> cards_list = new ArrayList<Card>();
