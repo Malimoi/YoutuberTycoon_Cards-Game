@@ -56,7 +56,7 @@ public class GameFrame extends JFrame{
 	
 	public static int nbPlayerCards = 0;
 	public static int nbAdvCards = 0;
-	public static List<Card> playerCards = new ArrayList<Card>();
+	public static List<Card> playerCardsHand = new ArrayList<Card>();
 	public static int pointerCard = -1;
 	//public static List<Card> advCards = new ArrayList<Card>();
 	
@@ -94,8 +94,8 @@ public class GameFrame extends JFrame{
 		
 		for (int i = 0;i<5;i++){
 			Random r = new Random();
-			Card card = MainClient.cards_list.get(r.nextInt(29)+1);
-			playerCards.add(card);
+			Card card = MainClient.playerCards.get(r.nextInt(29)+1);
+			playerCardsHand.add(card);
 			System.out.println(card.getName());
 		}
 		
@@ -105,7 +105,7 @@ public class GameFrame extends JFrame{
 	public void InitializeBackcards(){
 		
 		if (pointerCard>=0){
-			livePlayerCard = new AddCards(playerCards.get(pointerCard).getPath(), 280, 403);
+			livePlayerCard = new AddCards(playerCardsHand.get(pointerCard).getPath(), 280, 403);
 		}else{
 			livePlayerCard = new AddCards(lastPlayerCard.getPath(), 280, 403);
 		}		
@@ -121,8 +121,8 @@ public class GameFrame extends JFrame{
 	
 	public void UpdateContent(){
 		
-		for (int i = 0;i<playerCards.size();i++){
-			JPanel card = new AddCards(playerCards.get(i).getPath(), CARDS_WIDTH, CARDS_HEIGHT);
+		for (int i = 0;i<playerCardsHand.size();i++){
+			JPanel card = new AddCards(playerCardsHand.get(i).getPath(), CARDS_WIDTH, CARDS_HEIGHT);
 			card.addMouseListener(new MouseAdapter() {
 
 				@Override
@@ -166,8 +166,8 @@ public class GameFrame extends JFrame{
 							pointerCard = -1;
 							
 							cards_list.clear();
-							lastPlayerCard = playerCards.get(a);
-							playerCards.remove(a);
+							lastPlayerCard = playerCardsHand.get(a);
+							playerCardsHand.remove(a);
 							content.removeAll();
 						}					
 					}
@@ -235,6 +235,16 @@ public class GameFrame extends JFrame{
 		 */
 		
 		InitializeBackcards();
+		
+		/*
+		 * Profils
+		 */
+		
+		// -Player
+		
+		
+		
+		// -Adversaire
 		
 		
 		for (int i = 0;i<2;i++){

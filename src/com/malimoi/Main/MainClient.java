@@ -54,6 +54,7 @@ public class MainClient {
 	 * CONSTANT
 	 */
 	public static List<Card> cards_list = new ArrayList<Card>();
+	public static List<Card> playerCards = new ArrayList<Card>();
 	
 	/*
 	 * ICI : PRESENT QUE DANS LES VERSIONS TEST POUR NE PAS PASSER PAS LE LAUCHER / SERVER
@@ -129,6 +130,8 @@ public class MainClient {
     			TypesOfThemes.HUMOUR_DIVERTISSEMENT, Grades.BASE, 0), "images/cards/Toc Production.png", 28));
     	cards_list.add(new Card("ZORKA", TypesOfCards.YOUTUBER, new InfosYoutuber(450, 5, 4, 
     			TypesOfThemes.HUMOUR_DIVERTISSEMENT, Grades.BASE, 0), "images/cards/ZORKA.png", 29));
+    	
+    	playerCards = cards_list;
     	
     	
     	if (!IsTest){
