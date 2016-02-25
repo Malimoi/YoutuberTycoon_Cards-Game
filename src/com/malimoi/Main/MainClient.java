@@ -147,6 +147,7 @@ public class MainClient {
                 ex.printStackTrace();
                 System.exit(0);
             }
+            
             frame = new ChatFrame(access);
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             frame.pack();
@@ -161,10 +162,6 @@ public class MainClient {
     	}
     }
     public static void setJFrames(){
-     	 /*
-          * Ceci sont des valeurs fictives. Il faudra seulement get toutes les horraires sur le server.
- 		 */
- 
          
          UIManager.put("Synthetica.window.decoration", Boolean.FALSE);
          try {
@@ -174,16 +171,7 @@ public class MainClient {
      	} 
          
          new GameFrame(new Player("KevinX", "#FEDC01", 1, 1));
-         
-         /*
-         JFrame frame = new JFrame();
-         frame.setTitle("YoutuberTycoon V0.0.2");
-         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-         frame.pack();
-         frame.setLocationRelativeTo(null);
-         frame.setResizable(false);
-         frame.setVisible(true);
-         */
+
      }
     /**
      * Chat client access

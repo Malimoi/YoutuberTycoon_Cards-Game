@@ -66,7 +66,6 @@ public class GameFrame extends JFrame{
 	
 	public int playerFollowers = 100;
 	public int advFollowers = 100;
-	//public static List<Card> advCards = new ArrayList<Card>();
 	
 	public GameFrame(Player adversaire){
 		this.adversaire = adversaire;
