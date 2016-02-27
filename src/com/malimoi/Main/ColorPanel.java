@@ -7,12 +7,12 @@ import java.awt.Graphics2D;
 import javax.swing.JPanel;
 
 @SuppressWarnings("serial")
-public class COLOR extends JPanel {
+public class ColorPanel extends JPanel {
 	private Color c;
 	private Boolean border;
 	private int width;
 	private int height;
-	public COLOR(Color c, Boolean border, int width, int height){
+	public ColorPanel(Color c, Boolean border, int width, int height){
 		this.c=c;
 		this.border=border;
 		this.width=width;
@@ -31,5 +31,10 @@ public class COLOR extends JPanel {
 			g2d.drawLine(width-1, 0, width-1, height-1);
 		}
 	
+	}
+	
+	public void setColor(Color color){
+		this.c=color;
+		repaint();
 	}
 }

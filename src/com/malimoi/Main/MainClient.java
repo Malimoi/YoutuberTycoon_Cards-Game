@@ -66,7 +66,7 @@ public class MainClient {
 	/*
 	 * ICI : PRESENT QUE DANS LES VERSIONS TEST POUR NE PAS PASSER PAS LE LAUCHER / SERVER
 	 */
-	public static Boolean IsTest = true;
+	public static Boolean IsTest = false;
 	
 	public static ChatAccess access;
 	
@@ -142,7 +142,7 @@ public class MainClient {
     	
     	
     	if (!IsTest){
-    		String server = "5.196.72.214";
+    		String server = "127.0.0.1";
             int port = 25565;
             //ChatAccess access = null;
             try {
@@ -160,7 +160,7 @@ public class MainClient {
             frame.setResizable(false);
             frame.setVisible(false);
             
-            //new Launcher();
+            new Launcher();
 
     	}else{
     		setJFrames();
@@ -175,7 +175,7 @@ public class MainClient {
      		e.printStackTrace();
      	} 
          
-         new GameFrame(new Player("KevinX", "#FEDC01", 1, 1));
+         new GameFrame();
 
      }
     /**
@@ -203,6 +203,27 @@ public class MainClient {
                         String line;
                         while (true)
                         	if ((line = in.readLine()) != null){
+                        		System.out.println(line);
+                        		if (line.startsWith("startthegame")){
+                        			Thread pass = new Thread(new PasserelThread());
+                        			pass.start();
+                        		}else if(line.startsWith("adv")){
+                        			String[] s = line.split(" ");
+                        			GameFrame.advTrouve=true;
+                        			GameFrame.StartGame(new Player(s[1], s[2], Integer.valueOf(s[3]), Integer.valueOf(s[4])));	
+                        			
+                        		}else if(line.startsWith("pioche")){
+                        			for (int i = 0; i < cards_list.size(); i++){
+                        				if (Integer.valueOf(line.split(" ")[1]).equals(cards_list.get(i).getId())){
+                        					GameFrame.playerCardsHand.add(cards_list.get(i));
+                        				}
+                        			}                       			
+                        			GameFrame.content.removeAll();
+                        			GameFrame.cards_list.clear();
+                        			GameFrame.twiit_list.clear();
+                        			GameFrame.UpdateContent();
+                        			
+                        		}
                         		//
                         	}
                             
@@ -311,6 +332,14 @@ public class MainClient {
                 }
             });
         }
+    }
+    
+    public static class PasserelThread implements Runnable{
+    	
+    	public void run(){
+    		setJFrames();
+    	}
+    	
     }
     
 }

@@ -53,12 +53,12 @@ public class GameFrame extends JFrame{
 	
 	// -CONTENT
 	public static JPanel content = new JPanel();
-	public static JPanel livePlayerCard = new AddCards("images/cards/DOS_DE_CARTE.png", 280, 403);
-	public static JPanel liveAdvCard = new AddCards("images/cards/DOS_DE_CARTE.png", 280, 403);
+	public static AddCards livePlayerCard = new AddCards("images/cards/DOS_DE_CARTE.png", 280, 403);
+	public static AddCards liveAdvCard = new AddCards("images/cards/DOS_DE_CARTE.png", 280, 403);
 	
 	// -
-	public Player adversaire;
-	public List<Player> listPlayers = new ArrayList<Player>();
+	public static Player Adversaire;
+	public static List<Player> listPlayers = new ArrayList<Player>();
 	
 	public static List<JPanel> cards_list = new ArrayList<JPanel>();
 	public static List<JPanel> twiit_list = new ArrayList<JPanel>();
@@ -69,16 +69,23 @@ public class GameFrame extends JFrame{
 	public static int nbAdvCards = 0;
 	public static List<Card> playerCardsHand = new ArrayList<Card>();
 	public static int pointerCard = -1;
+	public static int pointerTwiit = -1;
 	
 	public static int playerFollowers = 100;
 	public static int advFollowers = 100;
 	public static int playerViews = 0;
 	public static int advViews = 0;
 	
-	public GameFrame(Player adversaire){
-		this.adversaire = adversaire;
-		this.listPlayers.add(MainClient.player);
-		this.listPlayers.add(adversaire);
+	public static int tours = 0;
+	
+	public static Player startPlayer = MainClient.player;
+	
+	public static Boolean advTrouve = false;
+	
+	static JLabel apercuCard = new JLabel();
+	
+	public GameFrame(){
+		
 		
 		Boolean size = true;
 		
@@ -88,24 +95,96 @@ public class GameFrame extends JFrame{
 		}
 		
 		content.setLayout(null);
-		content.setBackground(Color.decode("#F1F9FE"));
+		content.setBackground(Color.decode("#838383"));
 		content.setPreferredSize(new Dimension(LARGEUR, HAUTEUR));	
 		
-		InitializeContent();
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.setContentPane(content);
+		this.setSize(LARGEUR, HAUTEUR);
+		this.setVisible(true);
+		
+		/* Recherche d'adversaire, entré dans l'arène */
+		MainClient.access.send("join");
+		
+		String n = "Recherche d'adversaire en cours";
+		
+		JLabel note = new JLabel();
+		note.setFont(new Font("Tahoma", Font.PLAIN, 35));
+		note.setText(n+"...");
+		note.setForeground(Color.WHITE);
+		note.setHorizontalAlignment(JLabel.CENTER);
+		note.setBounds(0, HAUTEUR/2-40, LARGEUR, 40);
+		content.add(note);
+		
+		int p = 1;
+		
+		while(!advTrouve){
+			
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			String s = "";
+			
+			for (int i = 0;i<p%4;i++){
+				s+=".";
+			}
+			
+			note.setText(n+s);
+			
+			p++;
+			
+			// - SEULEMENT POUR FAIRE DES TESTS SOLO !
+			
+			if (p==100000000){
+				advTrouve=true;
+			}
+			
+		}
+		
+		note.setText("Adversaire trouvé !");
+		
+		try {
+			Thread.sleep(2000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		content.remove(note);
+		
+		
+		
+		
+	}
+	
+	public static void StartGame(Player adversaire){
+		try {
+			Thread.sleep(3000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		Adversaire = adversaire;
+		listPlayers.add(MainClient.player);
+		listPlayers.add(adversaire);
+		
+		content.setBackground(Color.decode("#F1F9FE"));
+		
+		//InitializeContent();
 		
 		/*
 		 * UPDATE
 		 */
 		
 		UpdateContent();
-		
-		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		this.setContentPane(content);
-		this.setSize(LARGEUR, HAUTEUR);
-		this.setVisible(true);
 	}
 	
-	public void InitializeContent(){
+	public static void InitializeContent(){
 		
 		for (int i = 0;i<5;i++){
 			Random r = new Random();
@@ -117,7 +196,7 @@ public class GameFrame extends JFrame{
 		
 	}
 	
-	public void InitializeBackcards(){
+	public static void InitializeBackcards(){
 		
 		if (pointerCard>=0){
 			livePlayerCard = new AddCards(playerCardsHand.get(pointerCard).getPath(), 280, 403);
@@ -134,10 +213,10 @@ public class GameFrame extends JFrame{
 		
 	}
 	
-	public void UpdateContent(){
+	public static void UpdateContent(){
 		
 		for (int i = 0;i<playerCardsHand.size();i++){
-			JPanel card = new AddCards(playerCardsHand.get(i).getPath(), CARDS_WIDTH, CARDS_HEIGHT);
+			AddCards card = new AddCards(playerCardsHand.get(i).getPath(), CARDS_WIDTH, CARDS_HEIGHT);
 			card.addMouseListener(new MouseAdapter() {
 
 				@Override
@@ -150,9 +229,9 @@ public class GameFrame extends JFrame{
 							if (pointerCard != a){
 								
 								pointerCard = a;
-								System.out.println("pointerCard = "+a);
 								content.removeAll();
 								cards_list.clear();
+								twiit_list.clear();
 								UpdateContent();
 								
 							}
@@ -169,25 +248,37 @@ public class GameFrame extends JFrame{
 					pointerCard = -1;
 					
 					cards_list.clear();
+					twiit_list.clear();
 					content.removeAll();
 					UpdateContent();
 				}
 				
 				@Override
 				public void mousePressed(MouseEvent e) {
+					
 					for (int a = 0;a<cards_list.size();a++){
+						
 						if (card.equals(cards_list.get(a))){
+							
 							pointerCard = -1;
 							
+							twiit_list.clear();
 							cards_list.clear();
+							
 							lastPlayerCard = playerCardsHand.get(a);
+							
 							if (lastPlayerCard.getType().equals(TypesOfCards.YOUTUBER)){
+								
 								twiitListCard.add(lastPlayerCard);
 								twiitListPlayer.add(MainClient.player);
-							}							
+								
+							}
+							
 							playerCardsHand.remove(a);
 							content.removeAll();
-						}					
+							
+						}		
+						
 					}
 					UpdateContent();
 				}
@@ -214,7 +305,29 @@ public class GameFrame extends JFrame{
 		 */
 		
 		for (int i = 0;i<twiitListCard.size();i++){		
-			JPanel t = new COLOR(Color.WHITE, true, TWIIT_WIDTH, TWIIT_HEIGHT);	
+			ColorPanel t = new ColorPanel(Color.WHITE, true, TWIIT_WIDTH, TWIIT_HEIGHT);	
+			t.addMouseListener(new MouseAdapter() {
+				@Override
+				public void mouseEntered(MouseEvent e){
+					t.setColor(Color.decode("#E1E0E0"));
+					for (int a = 0;a<twiit_list.size();a++){
+						
+						if (t.equals(twiit_list.get(a))){
+							
+							apercuCard.setText("Aperçu:");
+							livePlayerCard.setPath(twiitListCard.get(a).getPath());
+							
+						}		
+						
+					}
+				}
+				@Override
+				public void mouseExited(MouseEvent e){
+					t.setColor(Color.WHITE);
+					apercuCard.setText("Dernière carte jouée:");
+					livePlayerCard.setPath(lastPlayerCard.getPath());
+				}
+			});
 			t.setLayout(null);
 			t.setBounds(LARGEUR/2 - TWIIT_WIDTH/2, 10 + i*(TWIIT_HEIGHT-1), TWIIT_WIDTH, TWIIT_HEIGHT);
 			
@@ -224,9 +337,23 @@ public class GameFrame extends JFrame{
 			JPanel rt = new AddImages("images/RT_GRAY.png", 20, 20);
 			rt.setBounds(TWIIT_WIDTH/5, TWIIT_HEIGHT-25, 20, 20);
 			t.add(rt);
+			JLabel NbRts = new JLabel();
+			NbRts.setFont(new Font("Tahoma", Font.PLAIN, 15));
+			NbRts.setText(twiitListCard.get(i).getInfos().getRts()+"");
+			NbRts.setForeground(Color.decode("#BDBDBD"));
+			NbRts.setHorizontalAlignment(JLabel.LEFT);
+			NbRts.setBounds(TWIIT_WIDTH/5+24, TWIIT_HEIGHT-25, 20, 20);
+			t.add(NbRts);
 			JPanel heart = new AddImages("images/HEART_GRAY.png", 20, 20);
 			heart.setBounds(TWIIT_WIDTH/5+TWIIT_WIDTH/7, TWIIT_HEIGHT-25, 20, 20);
 			t.add(heart);
+			JLabel NbHearts = new JLabel();
+			NbHearts.setFont(new Font("Tahoma", Font.PLAIN, 15));
+			NbHearts.setText(twiitListCard.get(i).getInfos().getHearts()+"");
+			NbHearts.setForeground(Color.decode("#BDBDBD"));
+			NbHearts.setHorizontalAlignment(JLabel.LEFT);
+			NbHearts.setBounds(TWIIT_WIDTH/5+TWIIT_WIDTH/7+23, TWIIT_HEIGHT-25, 20, 20);
+			t.add(NbHearts);
 			JLabel name = new JLabel();
 			name.setFont(new Font("Arial", Font.BOLD, 15));
 			name.setText(twiitListCard.get(i).getName());
@@ -242,10 +369,12 @@ public class GameFrame extends JFrame{
 			msg_l1.setBounds(10+50+5, 30, TWIIT_WIDTH-65, 15);
 			t.add(msg_l1);
 			
+			twiit_list.add(t);
+			
 			content.add(t);
 		}	
 		
-		JPanel twiit_line = new COLOR(Color.WHITE, true, TWIIT_WIDTH, TWIIT_HEIGHT*5);
+		JPanel twiit_line = new ColorPanel(Color.WHITE, true, TWIIT_WIDTH, TWIIT_HEIGHT*5);
 		twiit_line.setBounds(LARGEUR/2 - TWIIT_WIDTH/2, 10, TWIIT_WIDTH, TWIIT_HEIGHT*5);
 		
 		content.add(twiit_line);
@@ -261,26 +390,26 @@ public class GameFrame extends JFrame{
 			Player p = MainClient.player; //Initialize
 			int followers = 0;
 			int views = 0;
-			String apercu = "Dernière carte joué:";
+			String apercu = "Dernière carte jouée:";
 			
 			if (i==0){
 				p=MainClient.player;
 				followers=playerFollowers;
 				views=playerViews;
-				if (pointerCard>=0){
+				if (pointerCard>=0 || pointerTwiit>=0){
 					apercu= "Aperçu:";
 				}
 			}else{
-				p=adversaire;
+				p=Adversaire;
 				followers=advFollowers;
 				views=advViews;
 			}	
 		
-			JPanel players_content = new COLOR(Color.WHITE, true, 300, 650);
+			JPanel players_content = new ColorPanel(Color.WHITE, true, 300, 650);
 			players_content.setLayout(null);
 			players_content.setBounds(LARGEUR/2 - TWIIT_WIDTH/2 - 10 - 300 + i*(300+2*10+TWIIT_WIDTH), 10, 300, 650);
 			
-			JPanel playerProfil = new COLOR(Color.decode(p.getColor()), false, 65, 65);
+			JPanel playerProfil = new ColorPanel(Color.decode(p.getColor()), false, 65, 65);
 			playerProfil.setLayout(new BorderLayout());
 			playerProfil.setBounds(10, 10, 65, 65);
 			
@@ -324,12 +453,24 @@ public class GameFrame extends JFrame{
 			nbViews.setHorizontalAlignment(JLabel.LEFT);
 			nbViews.setBounds(165+5+10+25, 30+17+28+25, 300, 25);
 			
-			JLabel apercuCard = new JLabel();
-			apercuCard.setFont(new Font("Tahoma", Font.BOLD, 19));
-			apercuCard.setText(apercu);
-			apercuCard.setForeground(Color.DARK_GRAY);
-			apercuCard.setHorizontalAlignment(JLabel.LEFT);
-			apercuCard.setBounds(10, 650-403-16-20, 300, 24);
+			if (i==0){
+				apercuCard = new JLabel();
+				apercuCard.setFont(new Font("Tahoma", Font.BOLD, 19));
+				apercuCard.setText(apercu);
+				apercuCard.setForeground(Color.DARK_GRAY);
+				apercuCard.setHorizontalAlignment(JLabel.LEFT);
+				apercuCard.setBounds(10, 650-403-16-20, 300, 24);
+				players_content.add(apercuCard);
+			}else{
+				JLabel apercuCard = new JLabel();
+				apercuCard.setFont(new Font("Tahoma", Font.BOLD, 19));
+				apercuCard.setText(apercu);
+				apercuCard.setForeground(Color.DARK_GRAY);
+				apercuCard.setHorizontalAlignment(JLabel.LEFT);
+				apercuCard.setBounds(10, 650-403-16-20, 300, 24);
+				players_content.add(apercuCard);
+			}
+			
 			
 			players_content.add(playerProfil);
 			players_content.add(name);
@@ -338,7 +479,7 @@ public class GameFrame extends JFrame{
 			players_content.add(minia);
 			players_content.add(viewsImg);
 			players_content.add(nbViews);	
-			players_content.add(apercuCard);
+			
 			
 			content.add(players_content);		
 			
@@ -400,6 +541,11 @@ public class GameFrame extends JFrame{
 		
 		public String getPath(){
 			return path;
+		}
+		
+		public void setPath(String s){
+			this.path=s;
+			repaint();
 		}
 
 	}
