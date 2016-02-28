@@ -31,6 +31,8 @@ import com.malimoi.cards.enums.TypesOfCards;
 import com.malimoi.cards.enums.TypesOfThemes;
 import com.malimoi.players.Player;
 
+import sun.applet.Main;
+
 @SuppressWarnings("serial")
 public class GameFrame extends JFrame{
 	public static GraphicsEnvironment graphicsEnvironment = GraphicsEnvironment.getLocalGraphicsEnvironment();
@@ -50,6 +52,7 @@ public class GameFrame extends JFrame{
 	public static final int CARDS_HEIGHT = 216;
 	
 	public static Card lastPlayerCard = MainClient.cards_list.get(0);
+	public static Card lastAdvCard = MainClient.cards_list.get(0);
 	
 	// -CONTENT
 	public static JPanel content = new JPanel();
@@ -189,7 +192,7 @@ public class GameFrame extends JFrame{
 		for (int i = 0;i<5;i++){
 			Random r = new Random();
 			Card card = MainClient.playerCards.get(r.nextInt(29)+1);
-			playerCardsHand.add(card);
+			MainClient.player.getHandCards().add(card);
 			System.out.println(card.getName());
 		}
 		
@@ -199,7 +202,7 @@ public class GameFrame extends JFrame{
 	public static void InitializeBackcards(){
 		
 		if (pointerCard>=0){
-			livePlayerCard = new AddCards(playerCardsHand.get(pointerCard).getPath(), 280, 403);
+			livePlayerCard = new AddCards(MainClient.player.getHandCards().get(pointerCard).getPath(), 280, 403);
 		}else{
 			livePlayerCard = new AddCards(lastPlayerCard.getPath(), 280, 403);
 		}		
@@ -215,8 +218,8 @@ public class GameFrame extends JFrame{
 	
 	public static void UpdateContent(){
 		
-		for (int i = 0;i<playerCardsHand.size();i++){
-			AddCards card = new AddCards(playerCardsHand.get(i).getPath(), CARDS_WIDTH, CARDS_HEIGHT);
+		for (int i = 0;i<MainClient.player.getHandCards().size();i++){
+			AddCards card = new AddCards(MainClient.player.getHandCards().get(i).getPath(), CARDS_WIDTH, CARDS_HEIGHT);
 			card.addMouseListener(new MouseAdapter() {
 
 				@Override
@@ -256,30 +259,43 @@ public class GameFrame extends JFrame{
 				@Override
 				public void mousePressed(MouseEvent e) {
 					
-					for (int a = 0;a<cards_list.size();a++){
+					if (MainClient.canPlay){
 						
-						if (card.equals(cards_list.get(a))){
+						for (int a = 0;a<cards_list.size();a++){
 							
-							pointerCard = -1;
-							
-							twiit_list.clear();
-							cards_list.clear();
-							
-							lastPlayerCard = playerCardsHand.get(a);
-							
-							if (lastPlayerCard.getType().equals(TypesOfCards.YOUTUBER)){
+							if (card.equals(cards_list.get(a))){
 								
-								twiitListCard.add(lastPlayerCard);
-								twiitListPlayer.add(MainClient.player);
+								if (MainClient.player.getHandCards().get(a).getInfos().getFollowers()<=playerFollowers){
+									
+									playerFollowers=(int) (playerFollowers-MainClient.player.getHandCards().get(a).getInfos().getFollowers()/2);
+									
+									pointerCard = -1;
+									
+									twiit_list.clear();
+									cards_list.clear();
+									
+									lastPlayerCard = MainClient.player.getHandCards().get(a);						
+									
+									MainClient.access.send("pose "+MainClient.player.getHandCards().get(a).getId()+" "+playerFollowers);
+									
+									if (lastPlayerCard.getType().equals(TypesOfCards.YOUTUBER)){						
+										
+										twiitListCard.add(lastPlayerCard);
+										twiitListPlayer.add(MainClient.player);
+										
+									}
+									
+									MainClient.player.getHandCards().remove(a);
+									content.removeAll();
+									
+								}
 								
-							}
+							}		
 							
-							playerCardsHand.remove(a);
-							content.removeAll();
-							
-						}		
+						}
 						
 					}
+			
 					UpdateContent();
 				}
 
@@ -303,20 +319,31 @@ public class GameFrame extends JFrame{
 		/*
 		 * Fake twiits
 		 */
+		int max = twiitListCard.size();
+		if (max >= 5){
+			max=5;
+		}
 		
-		for (int i = 0;i<twiitListCard.size();i++){		
+		for (int i = 0;i<max;i++){			
+			
 			ColorPanel t = new ColorPanel(Color.WHITE, true, TWIIT_WIDTH, TWIIT_HEIGHT);	
+			if (twiitListPlayer.get(twiitListCard.size()-1-i)==MainClient.player){
+				t.setColor(Color.decode("#E7FBED"));
+			}
 			t.addMouseListener(new MouseAdapter() {
 				@Override
 				public void mouseEntered(MouseEvent e){
-					t.setColor(Color.decode("#E1E0E0"));
+					
 					for (int a = 0;a<twiit_list.size();a++){
 						
 						if (t.equals(twiit_list.get(a))){
+							if (twiitListPlayer.get(twiitListCard.size()-1-a)==MainClient.player){
+								t.setColor(Color.decode("#E1E0E0"));
+							}
 							
 							apercuCard.setText("Aperçu:");
-							livePlayerCard.setPath(twiitListCard.get(a).getPath());
-							
+							livePlayerCard.setPath(twiitListCard.get(twiitListCard.size()-1-a).getPath());
+							break;
 						}		
 						
 					}
@@ -324,6 +351,16 @@ public class GameFrame extends JFrame{
 				@Override
 				public void mouseExited(MouseEvent e){
 					t.setColor(Color.WHITE);
+					for (int a = 0;a<twiit_list.size();a++){
+						
+						if (t.equals(twiit_list.get(a))){
+							if (twiitListPlayer.get(twiitListCard.size()-1-a)==MainClient.player){
+								t.setColor(Color.decode("#E7FBED"));
+								break;
+							}
+						}		
+						
+					}
 					apercuCard.setText("Dernière carte jouée:");
 					livePlayerCard.setPath(lastPlayerCard.getPath());
 				}
@@ -331,7 +368,7 @@ public class GameFrame extends JFrame{
 			t.setLayout(null);
 			t.setBounds(LARGEUR/2 - TWIIT_WIDTH/2, 10 + i*(TWIIT_HEIGHT-1), TWIIT_WIDTH, TWIIT_HEIGHT);
 			
-			JPanel profil = new AddImages("images/profils/"+twiitListCard.get(i).getName()+".png", 50, 50);
+			JPanel profil = new AddImages("images/profils/"+twiitListCard.get(twiitListCard.size()-1-i).getName()+".png", 50, 50);
 			profil.setBounds(10, 10, 50, 50);
 			t.add(profil);
 			JPanel rt = new AddImages("images/RT_GRAY.png", 20, 20);
@@ -339,7 +376,7 @@ public class GameFrame extends JFrame{
 			t.add(rt);
 			JLabel NbRts = new JLabel();
 			NbRts.setFont(new Font("Tahoma", Font.PLAIN, 15));
-			NbRts.setText(twiitListCard.get(i).getInfos().getRts()+"");
+			NbRts.setText(twiitListCard.get(twiitListCard.size()-1-i).getInfos().getRts()+"");
 			NbRts.setForeground(Color.decode("#BDBDBD"));
 			NbRts.setHorizontalAlignment(JLabel.LEFT);
 			NbRts.setBounds(TWIIT_WIDTH/5+24, TWIIT_HEIGHT-25, 20, 20);
@@ -349,14 +386,14 @@ public class GameFrame extends JFrame{
 			t.add(heart);
 			JLabel NbHearts = new JLabel();
 			NbHearts.setFont(new Font("Tahoma", Font.PLAIN, 15));
-			NbHearts.setText(twiitListCard.get(i).getInfos().getHearts()+"");
+			NbHearts.setText(twiitListCard.get(twiitListCard.size()-1-i).getInfos().getHearts()+"");
 			NbHearts.setForeground(Color.decode("#BDBDBD"));
 			NbHearts.setHorizontalAlignment(JLabel.LEFT);
 			NbHearts.setBounds(TWIIT_WIDTH/5+TWIIT_WIDTH/7+23, TWIIT_HEIGHT-25, 20, 20);
 			t.add(NbHearts);
 			JLabel name = new JLabel();
 			name.setFont(new Font("Arial", Font.BOLD, 15));
-			name.setText(twiitListCard.get(i).getName());
+			name.setText(twiitListCard.get(twiitListCard.size()-1-i).getName());
 			name.setForeground(Color.DARK_GRAY);
 			name.setHorizontalAlignment(JLabel.LEFT);
 			name.setBounds(10+50+5, 10, 300, 18);
@@ -378,6 +415,67 @@ public class GameFrame extends JFrame{
 		twiit_line.setBounds(LARGEUR/2 - TWIIT_WIDTH/2, 10, TWIIT_WIDTH, TWIIT_HEIGHT*5);
 		
 		content.add(twiit_line);
+		
+		for (int i = 0;i<2;i++){
+			
+			ColorPanel tourButton = new ColorPanel(Color.WHITE, true, 100, 50);
+			tourButton.setBounds(LARGEUR/2 - TWIIT_WIDTH/2 + i*(TWIIT_WIDTH)-100, TWIIT_HEIGHT*5+20, 100, 50);
+			
+			if (i == 0){
+				tourButton.setColor(Color.decode("#EFFEF4"));
+				if (MainClient.canPlay){
+					tourButton.setColor(Color.decode("#74FD9D"));
+				}
+				JLabel msg_l1 = new JLabel();
+				msg_l1.setFont(new Font("Tahoma", Font.PLAIN, 16));
+				msg_l1.setText("Fin du tour");
+				msg_l1.setForeground(Color.DARK_GRAY);
+				msg_l1.setHorizontalAlignment(JLabel.CENTER);
+				msg_l1.setBounds(0, 30, 100, 20);
+				tourButton.add(msg_l1);
+				tourButton.addMouseListener(new MouseAdapter() {
+					@Override
+					public void mouseEntered(MouseEvent e){
+						if (MainClient.canPlay){
+							tourButton.setColor(Color.decode("#B7FE4C"));
+						}
+					}
+					@Override
+					public void mouseExited(MouseEvent e){
+						if (MainClient.canPlay){
+							tourButton.setColor(Color.decode("#74FD9D"));
+						}
+					}
+					@Override
+					public void mousePressed(MouseEvent e){
+						if (MainClient.canPlay){
+							MainClient.canPlay=false;
+							MainClient.access.send("toursuivant");
+							
+							content.removeAll();
+							cards_list.clear();
+							twiit_list.clear();
+							UpdateContent();
+						}
+					}
+				});
+			}else if (i == 1){
+				tourButton.setColor(Color.decode("#FEF1F1"));
+				if (!MainClient.canPlay){
+					tourButton.setColor(Color.decode("#FE4C4C"));
+				}
+				JLabel msg_l1 = new JLabel();
+				msg_l1.setFont(new Font("Tahoma", Font.PLAIN, 16));
+				msg_l1.setText("Tour adverse");
+				msg_l1.setForeground(Color.DARK_GRAY);
+				msg_l1.setHorizontalAlignment(JLabel.CENTER);
+				msg_l1.setBounds(0, 30, 100, 20);
+				tourButton.add(msg_l1);
+			}
+			
+			content.add(tourButton);
+			
+		}
 		
 		/*
 		 * Players

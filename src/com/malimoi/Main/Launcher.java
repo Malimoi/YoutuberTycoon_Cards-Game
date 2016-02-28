@@ -180,6 +180,7 @@ public static GraphicsEnvironment graphicsEnvironment=GraphicsEnvironment.getLoc
 			this.FOND = Color.decode("#D3D3D3");
 				if (name.contains("Start")){
 					MainClient.access.send(pseudoField.getText());
+					MainClient.player.setName(pseudoField.getText());
 					try {
 						Thread.sleep(500);
 					} catch (InterruptedException e1) {

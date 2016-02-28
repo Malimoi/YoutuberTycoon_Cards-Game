@@ -39,6 +39,7 @@ import java.util.Observer;
 
 public class MainClient {
 	public static String version = "Alpha 0.2";
+	
 	/*
 	 * Client propieties
 	 */
@@ -61,7 +62,8 @@ public class MainClient {
 	 */
 	public static List<Card> cards_list = new ArrayList<Card>();
 	public static List<Card> playerCards = new ArrayList<Card>();
-	public static Player player = new Player("Malimoi", "#01FE12", 1, 1);
+	public static Player player = new Player("Kevin", "#01FE12", 1, 1, new ArrayList<Card>(), new ArrayList<Card>());
+	public static Boolean canPlay = false;
 	
 	/*
 	 * ICI : PRESENT QUE DANS LES VERSIONS TEST POUR NE PAS PASSER PAS LE LAUCHER / SERVER
@@ -210,12 +212,18 @@ public class MainClient {
                         		}else if(line.startsWith("adv")){
                         			String[] s = line.split(" ");
                         			GameFrame.advTrouve=true;
-                        			GameFrame.StartGame(new Player(s[1], s[2], Integer.valueOf(s[3]), Integer.valueOf(s[4])));	
+                        			GameFrame.StartGame(new Player(s[1], s[2], Integer.valueOf(s[3]), Integer.valueOf(s[4]),
+                        					new ArrayList<Card>(), new ArrayList<Card>()));	
+                        			if (Integer.valueOf(s[5]).equals(1)){
+                        				canPlay=true;
+                        			}
+                        			GameFrame.playerFollowers=100;
+                        			GameFrame.advFollowers=100;
                         			
                         		}else if(line.startsWith("pioche")){
                         			for (int i = 0; i < cards_list.size(); i++){
                         				if (Integer.valueOf(line.split(" ")[1]).equals(cards_list.get(i).getId())){
-                        					GameFrame.playerCardsHand.add(cards_list.get(i));
+                        					player.getHandCards().add(cards_list.get(i));
                         				}
                         			}                       			
                         			GameFrame.content.removeAll();
@@ -223,6 +231,26 @@ public class MainClient {
                         			GameFrame.twiit_list.clear();
                         			GameFrame.UpdateContent();
                         			
+                        		}else if(line.startsWith("pose")){
+                        			GameFrame.twiit_list.clear();
+                        			GameFrame.cards_list.clear();
+                        			
+                        			for (int i = 0;i < cards_list.size();i++){
+                        				if (Integer.valueOf(line.split(" ")[1]).equals(cards_list.get(i).getId())){
+                        					GameFrame.lastAdvCard = cards_list.get(i);
+                        				}
+                        			}						
+        							if (GameFrame.lastAdvCard.getType().equals(TypesOfCards.YOUTUBER)){						
+        								
+        								GameFrame.twiitListCard.add(GameFrame.lastAdvCard);
+        								GameFrame.twiitListPlayer.add(GameFrame.Adversaire);
+        								
+        							}
+        							GameFrame.advFollowers=(int) (Integer.valueOf(line.split(" ")[2])/2);
+        							GameFrame.content.removeAll();
+        							GameFrame.UpdateContent();
+                        		}else if(line.startsWith("toursuivant")){
+                        			canPlay=true;
                         		}
                         		//
                         	}
