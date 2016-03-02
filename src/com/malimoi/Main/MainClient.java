@@ -15,6 +15,7 @@ package com.malimoi.Main;
 
 import javax.swing.*;
 
+import com.malimoi.Main.GameFrame.PlaySound;
 import com.malimoi.cards.Card;
 import com.malimoi.cards.InfosSpeciale;
 import com.malimoi.cards.InfosYoutuber;
@@ -210,26 +211,30 @@ public class MainClient {
                         			Thread pass = new Thread(new PasserelThread());
                         			pass.start();
                         		}else if(line.startsWith("adv")){
+                        			GameFrame.playerFollowers=0;
+                        			GameFrame.advFollowers=0;
+                        			
                         			String[] s = line.split(" ");
                         			GameFrame.advTrouve=true;
                         			GameFrame.StartGame(new Player(s[1], s[2], Integer.valueOf(s[3]), Integer.valueOf(s[4]),
                         					new ArrayList<Card>(), new ArrayList<Card>()));	
-                        			if (Integer.valueOf(s[5]).equals(1)){
+                        			if (Integer.valueOf(s[5]).equals(0)){
                         				canPlay=true;
+                        				GameFrame.playerFollowers+=100;
+                        				access.send("pioche");
                         			}
-                        			GameFrame.playerFollowers=100;
-                        			GameFrame.advFollowers=100;
+                        			
                         			
                         		}else if(line.startsWith("pioche")){
+                        			Thread t = new Thread(new GameFrame.PlaySound("pop.wav"));
+                					t.start();
+                        			
                         			for (int i = 0; i < cards_list.size(); i++){
                         				if (Integer.valueOf(line.split(" ")[1]).equals(cards_list.get(i).getId())){
                         					player.getHandCards().add(cards_list.get(i));
                         				}
                         			}                       			
-                        			GameFrame.content.removeAll();
-                        			GameFrame.cards_list.clear();
-                        			GameFrame.twiit_list.clear();
-                        			GameFrame.UpdateContent();
+                        			GameFrame.PrepareUpdate();
                         			
                         		}else if(line.startsWith("pose")){
                         			GameFrame.twiit_list.clear();
@@ -246,11 +251,14 @@ public class MainClient {
         								GameFrame.twiitListPlayer.add(GameFrame.Adversaire);
         								
         							}
-        							GameFrame.advFollowers=(int) (Integer.valueOf(line.split(" ")[2])/2);
+        							GameFrame.advFollowers=(int) (Integer.valueOf(line.split(" ")[2]));
         							GameFrame.content.removeAll();
         							GameFrame.UpdateContent();
                         		}else if(line.startsWith("toursuivant")){
                         			canPlay=true;
+                        			access.send("pioche");
+                        			GameFrame.playerFollowers+=100;
+                        			GameFrame.PrepareUpdate();
                         		}
                         		//
                         	}

@@ -1,5 +1,6 @@
 package com.malimoi.Main;
 
+import java.applet.Applet;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -14,7 +15,10 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -30,8 +34,11 @@ import com.malimoi.cards.Card;
 import com.malimoi.cards.enums.TypesOfCards;
 import com.malimoi.cards.enums.TypesOfThemes;
 import com.malimoi.players.Player;
+import com.sun.media.jfxmedia.AudioClip;
 
 import sun.applet.Main;
+import sun.audio.AudioPlayer;
+import sun.audio.AudioStream;
 
 @SuppressWarnings("serial")
 public class GameFrame extends JFrame{
@@ -86,6 +93,8 @@ public class GameFrame extends JFrame{
 	public static Boolean advTrouve = false;
 	
 	static JLabel apercuCard = new JLabel();
+	
+	public static Long lastTime = System.currentTimeMillis();
 	
 	public GameFrame(){
 		
@@ -187,6 +196,13 @@ public class GameFrame extends JFrame{
 		UpdateContent();
 	}
 	
+	public static void PrepareUpdate(){
+		content.removeAll();
+		cards_list.clear();
+		twiit_list.clear();
+		UpdateContent();
+	}
+	
 	public static void InitializeContent(){
 		
 		for (int i = 0;i<5;i++){
@@ -258,7 +274,8 @@ public class GameFrame extends JFrame{
 				
 				@Override
 				public void mousePressed(MouseEvent e) {
-					
+					Thread t = new Thread(new PlaySound("click.wav"));
+					t.start();
 					if (MainClient.canPlay){
 						
 						for (int a = 0;a<cards_list.size();a++){
@@ -419,7 +436,7 @@ public class GameFrame extends JFrame{
 		for (int i = 0;i<2;i++){
 			
 			ColorPanel tourButton = new ColorPanel(Color.WHITE, true, 100, 50);
-			tourButton.setBounds(LARGEUR/2 - TWIIT_WIDTH/2 + i*(TWIIT_WIDTH)-100, TWIIT_HEIGHT*5+20, 100, 50);
+			tourButton.setBounds(LARGEUR/2 - TWIIT_WIDTH/2 + i*(TWIIT_WIDTH)-i*100, TWIIT_HEIGHT*5+20, 100, 50);
 			
 			if (i == 0){
 				tourButton.setColor(Color.decode("#EFFEF4"));
@@ -431,7 +448,7 @@ public class GameFrame extends JFrame{
 				msg_l1.setText("Fin du tour");
 				msg_l1.setForeground(Color.DARK_GRAY);
 				msg_l1.setHorizontalAlignment(JLabel.CENTER);
-				msg_l1.setBounds(0, 30, 100, 20);
+				msg_l1.setBounds(0, 40, 100, 20);
 				tourButton.add(msg_l1);
 				tourButton.addMouseListener(new MouseAdapter() {
 					@Override
@@ -451,11 +468,9 @@ public class GameFrame extends JFrame{
 						if (MainClient.canPlay){
 							MainClient.canPlay=false;
 							MainClient.access.send("toursuivant");
+							advFollowers+=100;
 							
-							content.removeAll();
-							cards_list.clear();
-							twiit_list.clear();
-							UpdateContent();
+							PrepareUpdate();
 						}
 					}
 				});
@@ -469,7 +484,7 @@ public class GameFrame extends JFrame{
 				msg_l1.setText("Tour adverse");
 				msg_l1.setForeground(Color.DARK_GRAY);
 				msg_l1.setHorizontalAlignment(JLabel.CENTER);
-				msg_l1.setBounds(0, 30, 100, 20);
+				msg_l1.setBounds(0, 40, 100, 20);
 				tourButton.add(msg_l1);
 			}
 			
@@ -587,6 +602,21 @@ public class GameFrame extends JFrame{
 		
 	}
 	
+	public static void PlaySound(String path) throws IOException{
+			String gongFile = "sounds/"+path;
+		    InputStream in = new FileInputStream(gongFile);
+		 
+		    // create an audiostream from the inputstream
+		    AudioStream audioStream = new AudioStream(in);
+		 
+		    // play the audio clip with the audioplayer class
+		    AudioPlayer.player.start(audioStream);
+	}
+	
+	/*
+	 * InputStream inputStream = getClass().getResourceAsStream(SOUND_FILENAME); <------ GET IN SAME DIRECTORY
+	 */
+	
 	static class AddImages extends JPanel {
 
 		private String path;
@@ -646,6 +676,27 @@ public class GameFrame extends JFrame{
 			repaint();
 		}
 
+	}
+	
+	public static class PlaySound implements Runnable{
+		
+		private String path;
+		
+		public PlaySound(String path){
+			this.path=path;
+		}
+
+		@Override
+		public void run() {
+			try {
+				PlaySound(path);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+		}
+		
 	}
 	
 }
