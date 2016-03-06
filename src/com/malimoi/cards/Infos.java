@@ -12,4 +12,12 @@ public abstract class Infos {
 	public abstract Grades getGrade();
 	public abstract int getId_power();
 	
+	public abstract void setFollowers(int followers);
+	public abstract void setRts(int rts);
+	public abstract void setHearts(int hearts);
+	public abstract void setTheme(TypesOfThemes theme);
+	public abstract void setGrade(Grades grade);
+	public abstract void setId_power(int id_power);
+	
 }
+

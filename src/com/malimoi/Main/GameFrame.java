@@ -58,8 +58,8 @@ public class GameFrame extends JFrame{
 	public static final int CARDS_WIDTH = 150;
 	public static final int CARDS_HEIGHT = 216;
 	
-	public static Card lastPlayerCard = MainClient.cards_list.get(0);
-	public static Card lastAdvCard = MainClient.cards_list.get(0);
+	public static Card lastPlayerCard = MainClient.cards_list[0];
+	public static Card lastAdvCard = MainClient.cards_list[0];
 	
 	// -CONTENT
 	public static JPanel content = new JPanel();
@@ -73,7 +73,7 @@ public class GameFrame extends JFrame{
 	public static List<JPanel> cards_list = new ArrayList<JPanel>();
 	public static List<JPanel> twiit_list = new ArrayList<JPanel>();
 	public static List<Player> twiitListPlayer = new ArrayList<Player>();
-	public static List<Card> twiitListCard = new ArrayList<Card>();
+	public static final List<Card> twiitListCard = new ArrayList<Card>();
 	
 	public static int nbPlayerCards = 0;
 	public static int nbAdvCards = 0;
@@ -93,8 +93,11 @@ public class GameFrame extends JFrame{
 	public static Boolean advTrouve = false;
 	
 	static JLabel apercuCard = new JLabel();
+	static JLabel nbViews1 = new JLabel();
+	static JLabel nbViews2 = new JLabel();
 	
-	public static Long lastTime = System.currentTimeMillis();
+	public static Card twiitSelect = null;
+	public static List<Card> alreadyPlay = new ArrayList<Card>();
 	
 	public GameFrame(){
 		
@@ -194,6 +197,32 @@ public class GameFrame extends JFrame{
 		 */
 		
 		UpdateContent();
+	}
+	
+	public static void AnimViews(int nbPl, int addViews){
+		JLabel lab = nbViews1;
+		int views = playerViews;
+		final int max = playerViews+addViews;
+		if (nbPl==2){
+			lab=nbViews2;
+			views = advViews;
+		}
+		
+		for (int i = playerViews; i <= max; i=i+2){
+			lab.setText(i+"");
+			if (nbPl==1){
+				playerViews=i;
+			}else{
+				advViews=i;
+			}
+			try {
+				Thread.sleep(1);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
 	}
 	
 	public static void PrepareUpdate(){
@@ -354,10 +383,13 @@ public class GameFrame extends JFrame{
 					for (int a = 0;a<twiit_list.size();a++){
 						
 						if (t.equals(twiit_list.get(a))){
-							if (twiitListPlayer.get(twiitListCard.size()-1-a)==MainClient.player){
-								t.setColor(Color.decode("#E1E0E0"));
-							}
 							
+							if (twiitSelect == null){
+								if (twiitListPlayer.get(twiitListCard.size()-1-a)==MainClient.player){
+									t.setColor(Color.decode("#E1E0E0"));
+								}
+							}
+						
 							apercuCard.setText("Aperçu:");
 							livePlayerCard.setPath(twiitListCard.get(twiitListCard.size()-1-a).getPath());
 							break;
@@ -367,19 +399,90 @@ public class GameFrame extends JFrame{
 				}
 				@Override
 				public void mouseExited(MouseEvent e){
+					
 					t.setColor(Color.WHITE);
 					for (int a = 0;a<twiit_list.size();a++){
 						
 						if (t.equals(twiit_list.get(a))){
-							if (twiitListPlayer.get(twiitListCard.size()-1-a)==MainClient.player){
-								t.setColor(Color.decode("#E7FBED"));
-								break;
+							if (twiitSelect == null){
+								if (twiitListPlayer.get(twiitListCard.size()-1-a)==MainClient.player){
+									t.setColor(Color.decode("#E7FBED"));
+									break;
+								}
+							}else{
+								if (twiitListPlayer.get(twiitListCard.size()-1-a)==MainClient.player){
+									t.setColor(Color.decode("#00E62E"));
+									break;
+								}
 							}
 						}		
 						
 					}
 					apercuCard.setText("Dernière carte jouée:");
 					livePlayerCard.setPath(lastPlayerCard.getPath());
+				}
+				@Override
+				public void mousePressed(MouseEvent e){
+						
+					Thread th = new Thread(new AnimationViewsThread(1, 4000));
+					th.start();
+					
+					if (twiitSelect == null){
+						for (int a = 0;a<twiit_list.size();a++){
+							
+							if (t.equals(twiit_list.get(a))){
+								
+								if (twiitListPlayer.get(twiitListCard.size()-1-a)==MainClient.player){
+										boolean already = false;
+										for (int b = 0; b < alreadyPlay.size(); b++){
+											if (alreadyPlay.get(b).equals(twiitListCard.get(twiitListCard.size()-1-a))){
+												already=true;
+												break;
+											}
+										}
+										if(!already){
+											t.setColor(Color.decode("#00E62E"));
+											twiitSelect=twiitListCard.get(twiitListCard.size()-1-a);
+											
+										}
+										break;			
+								}
+								
+								
+							}
+						}
+					}else{
+						for (int a = 0;a<twiit_list.size();a++){
+							
+							if (t.equals(twiit_list.get(a))){
+								if (twiitListPlayer.get(twiitListCard.size()-1-a)==MainClient.player){
+									if(twiitSelect==twiitListCard.get(twiitListCard.size()-1-a)){
+										twiitSelect=null;
+										t.setColor(Color.WHITE);
+										break;
+									}
+								}
+								if (twiitListPlayer.get(twiitListCard.size()-1-a)==Adversaire){
+									for (int b = 0; b<twiitListCard.size(); b++){
+										if (twiitListCard.get(b).equals(twiitSelect) && twiitListPlayer.get(b).equals(MainClient.player)){
+											/*
+											 * Faire verif server
+											 */
+											MainClient.access.send("attack "+b+" "+(twiitListCard.size()-1-a));
+											System.out.println(twiitListCard.get(b).getName()+" attaque "+twiitListCard.get(twiitListCard.size()-1-a).getName());
+											alreadyPlay.add(twiitSelect);
+											twiitSelect=null;
+											
+											break;
+										}
+									}
+									
+								}
+							}
+						}
+						
+					}
+					
 				}
 			});
 			t.setLayout(null);
@@ -503,12 +606,14 @@ public class GameFrame extends JFrame{
 			Player p = MainClient.player; //Initialize
 			int followers = 0;
 			int views = 0;
+			JLabel nbViewslab = new JLabel();
 			String apercu = "Dernière carte jouée:";
 			
 			if (i==0){
 				p=MainClient.player;
 				followers=playerFollowers;
 				views=playerViews;
+				nbViewslab=nbViews1;
 				if (pointerCard>=0 || pointerTwiit>=0){
 					apercu= "Aperçu:";
 				}
@@ -516,6 +621,7 @@ public class GameFrame extends JFrame{
 				p=Adversaire;
 				followers=advFollowers;
 				views=advViews;
+				nbViewslab=nbViews2;
 			}	
 		
 			JPanel players_content = new ColorPanel(Color.WHITE, true, 300, 650);
@@ -555,16 +661,35 @@ public class GameFrame extends JFrame{
 			nbFollow.setHorizontalAlignment(JLabel.LEFT);
 			nbFollow.setBounds(10+65+5, 30+17, 300, 34);
 			
-			JPanel minia = new AddImages("images/miniatures/"+MainClient.THEMES_IMAGES_PATH[p.getThemeId()-1], 165, 95);
+			final AddImages minia = new AddImages("images/miniatures/"+MainClient.THEMES_IMAGES_PATH[p.getThemeId()-1], 165, 95);
 			minia.setBounds(10, 30+17+28+25, 165, 95);
+			
+			minia.addMouseListener(new MouseAdapter() {
+				@Override
+				public void mouseEntered(MouseEvent e){
+					minia.redefine(165-20, 95-20);
+					minia.setBounds(20, 30+17+28+25+10, 165-20, 95-20);
+				}
+				@Override
+				public void mouseExited(MouseEvent e){
+					minia.redefine(165, 95);
+					minia.setBounds(10, 30+17+28+25, 165, 95);
+				}
+				@Override
+				public void mousePressed(MouseEvent e){
+					
+				}
+			});
+			
 			JPanel viewsImg = new AddImages("images/miniatures/views.png", 25, 25);
 			viewsImg.setBounds(165+5+10, 30+17+28+25, 25, 25);
-			JLabel nbViews = new JLabel();
-			nbViews.setFont(new Font("Tahoma", Font.PLAIN, 21));
-			nbViews.setText(views+"");
-			nbViews.setForeground(Color.decode("#A8A8A7"));
-			nbViews.setHorizontalAlignment(JLabel.LEFT);
-			nbViews.setBounds(165+5+10+25, 30+17+28+25, 300, 25);
+			
+			nbViewslab.setFont(new Font("Tahoma", Font.PLAIN, 21));
+			nbViewslab.setText(views+"");
+			nbViewslab.setForeground(Color.decode("#A8A8A7"));
+			nbViewslab.setHorizontalAlignment(JLabel.LEFT);
+			nbViewslab.setBounds(165+5+10+25, 30+17+28+25, 300, 25);
+			
 			
 			if (i==0){
 				apercuCard = new JLabel();
@@ -591,7 +716,7 @@ public class GameFrame extends JFrame{
 			players_content.add(nbFollow);
 			players_content.add(minia);
 			players_content.add(viewsImg);
-			players_content.add(nbViews);	
+			players_content.add(nbViewslab);	
 			
 			
 			content.add(players_content);		
@@ -640,6 +765,12 @@ public class GameFrame extends JFrame{
 			} catch (IOException ex) {
 				ex.printStackTrace();
 			}
+		}
+		
+		public void redefine(int x, int y){
+			this.x=x;
+			this.y=y;
+			repaint();
 		}
 
 	}
@@ -694,6 +825,24 @@ public class GameFrame extends JFrame{
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			
+		}
+		
+	}
+	
+	public static class AnimationViewsThread implements Runnable{
+		
+		private int nbPl;
+		private int addViews;
+		
+		public AnimationViewsThread(int nbPl, int addViews){
+			this.nbPl=nbPl;
+			this.addViews=addViews;
+		}
+
+		@Override
+		public void run() {
+				AnimViews(nbPl, addViews);
 			
 		}
 		

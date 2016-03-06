@@ -23,6 +23,36 @@ public class InfosYoutuber extends Infos {
 	}
 	
 	@Override
+	public void setFollowers(int followers) {
+		this.followers = followers;
+	}
+	
+	@Override
+	public void setRts(int rts) {
+		this.rts = rts;
+	}
+	
+	@Override
+	public void setHearts(int hearts) {
+		this.hearts = hearts;
+	}
+	
+	@Override
+	public void setTheme(TypesOfThemes theme) {
+		this.theme = theme;
+	}
+	
+	@Override
+	public void setGrade(Grades grade) {
+		this.grade = grade;
+	}
+	
+	@Override
+	public void setId_power(int id_power) {
+		this.id_power = id_power;
+	}
+
+	@Override
 	public int getFollowers() {
 		// TODO Auto-generated method stub
 		return followers;
@@ -54,3 +84,4 @@ public class InfosYoutuber extends Infos {
 	}
 
 }
+

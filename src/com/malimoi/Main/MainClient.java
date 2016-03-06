@@ -61,7 +61,66 @@ public class MainClient {
 	/*
 	 * Variables players
 	 */
-	public static List<Card> cards_list = new ArrayList<Card>();
+	public static final Card[] cards_list = { new Card("Dos de carte", TypesOfCards.BACK, null, "images/cards/DOS_DE_CARTE.png", 0),
+	    	new Card("Amandine Cuisine", TypesOfCards.YOUTUBER, new InfosYoutuber(200, 3, 1, 
+	    			TypesOfThemes.VIEPRATIQUE_STYLE_BEAUTE, Grades.BASE, 0), "images/cards/Amandine Cuisine.png", 1),
+	    	new Card("Anthony-Fitness", TypesOfCards.YOUTUBER, new InfosYoutuber(350, 5, 2, TypesOfThemes.SPORT, Grades.BASE, 0),
+	    			"images/cards/Anthony-Fitness.png", 2),
+	    	new Card("Aurélie Testenbeauté", TypesOfCards.YOUTUBER, new InfosYoutuber(250, 2, 3, 
+	    			TypesOfThemes.VIEPRATIQUE_STYLE_BEAUTE, Grades.BASE, 0), "images/cards/Aurélie Testenbeauté.png", 3),
+	    	new Card("Boost vues 5k", TypesOfCards.SPECIALE, new InfosSpeciale(400, Grades.BASE, 1),
+	    			"images/cards/Boost vues 5k.png", 4),
+	    	new Card("CAPTAIN WORKOUT", TypesOfCards.YOUTUBER, new InfosYoutuber(450, 7, 2, TypesOfThemes.SPORT, Grades.BASE, 0),
+	    			"images/cards/CAPTAIN WORKOUT.png", 5),
+	    	new Card("Cédric Froment", TypesOfCards.YOUTUBER, new InfosYoutuber(300, 3, 3, TypesOfThemes.EDUCATION, Grades.BASE, 0),
+	    			"images/cards/Cédric Froment.png", 6),
+	    	new Card("Ellen LC", TypesOfCards.YOUTUBER, new InfosYoutuber(250, 1, 4, 
+	    			TypesOfThemes.VIEPRATIQUE_STYLE_BEAUTE, Grades.BASE, 0), "images/cards/Ellen LC.png", 7),
+	    	new Card("Esprit Riche", TypesOfCards.YOUTUBER, new InfosYoutuber(200, 2, 2, 
+	    			TypesOfThemes.EDUCATION, Grades.BASE, 0), "images/cards/Esprit Riche.png", 8),
+	    	new Card("Flomars", TypesOfCards.YOUTUBER, new InfosYoutuber(450, 2, 7, 
+	    			TypesOfThemes.GAMING, Grades.BASE, 0), "images/cards/Flomars.png", 9),
+	    	new Card("FrankCotty", TypesOfCards.YOUTUBER, new InfosYoutuber(350, 3, 4, 
+	    			TypesOfThemes.MUSIQUE, Grades.BASE, 0), "images/cards/FrankCotty.png", 10),
+	    	new Card("Delete user gamma", TypesOfCards.SPECIALE, new InfosSpeciale(650, Grades.BASE, 2),
+	    			"images/cards/Delete user gamma.png", 11),
+	    	new Card("Double ♥", TypesOfCards.SPECIALE, new InfosSpeciale(650, Grades.BASE, 3),
+	    			"images/cards/Double ♥.png", 12),
+	    	new Card("Double RTs", TypesOfCards.SPECIALE, new InfosSpeciale(650, Grades.BASE, 4),
+	    			"images/cards/Double RTs.png", 13),
+	    	new Card("Fred deBeauxArts", TypesOfCards.YOUTUBER, new InfosYoutuber(300, 3, 3, 
+	    			TypesOfThemes.VIEPRATIQUE_STYLE_BEAUTE, Grades.BASE, 0), "images/cards/Fred deBeauxArts.png", 14),
+	    	new Card("Gadu Gaming", TypesOfCards.YOUTUBER, new InfosYoutuber(350, 3, 4, 
+	    			TypesOfThemes.GAMING, Grades.BASE, 0), "images/cards/Gadu Gaming.png", 15),
+	    	new Card("JeanFaitTrop", TypesOfCards.YOUTUBER, new InfosYoutuber(350, 4, 3, 
+	    			TypesOfThemes.HUMOUR_DIVERTISSEMENT, Grades.BASE, 0), "images/cards/JeanFaitTrop.png", 16),
+	    	new Card("Léonard", TypesOfCards.YOUTUBER, new InfosYoutuber(300, 2, 4, 
+	    			TypesOfThemes.HUMOUR_DIVERTISSEMENT, Grades.BASE, 0), "images/cards/Léonard.png", 17),
+	    	new Card("Loulou", TypesOfCards.YOUTUBER, new InfosYoutuber(400, 3, 5, 
+	    			TypesOfThemes.HUMOUR_DIVERTISSEMENT, Grades.BASE, 0), "images/cards/Loulou.png", 18),
+	    	new Card("Monte Le Son", TypesOfCards.YOUTUBER, new InfosYoutuber(150, 1, 2, 
+	    			TypesOfThemes.MUSIQUE, Grades.BASE, 0), "images/cards/Monte Le Son.png", 19),
+	    	new Card("Napoleon", TypesOfCards.YOUTUBER, new InfosYoutuber(400, 4, 4, 
+	    			TypesOfThemes.GAMING, Grades.BASE, 0), "images/cards/Napoleon.png", 20),
+	    	new Card("PikaShoute", TypesOfCards.YOUTUBER, new InfosYoutuber(200, 2, 2, 
+	    			TypesOfThemes.HUMOUR_DIVERTISSEMENT, Grades.BASE, 0), "images/cards/PikaShoute.png", 21),
+	    	new Card("RAPH&MAX", TypesOfCards.YOUTUBER, new InfosYoutuber(500, 4, 6, 
+	    			TypesOfThemes.HUMOUR_DIVERTISSEMENT, Grades.BASE, 0), "images/cards/RAPH&MAX.png", 22),
+	    	new Card("Roxas_", TypesOfCards.YOUTUBER, new InfosYoutuber(250, 4, 1, 
+	    			TypesOfThemes.GAMING, Grades.BASE, 0), "images/cards/Roxas_.png", 23),
+	    	new Card("Samia Tsuki", TypesOfCards.YOUTUBER, new InfosYoutuber(300, 2, 4, 
+	    			TypesOfThemes.VIEPRATIQUE_STYLE_BEAUTE, Grades.BASE, 0), "images/cards/Samia Tsuki.png", 24),
+	    	new Card("SophieGuichard", TypesOfCards.YOUTUBER, new InfosYoutuber(150, 1, 2, 
+	    			TypesOfThemes.EDUCATION, Grades.BASE, 0), "images/cards/SophieGuichard.png", 25),
+	    	new Card("TheSeB's", TypesOfCards.YOUTUBER, new InfosYoutuber(400, 5, 3, 
+	    			TypesOfThemes.GAMING, Grades.BASE, 0), "images/cards/TheSeB's.png", 26),
+	    	new Card("Tidark Production", TypesOfCards.YOUTUBER, new InfosYoutuber(450, 1, 8, 
+	    			TypesOfThemes.MUSIQUE, Grades.BASE, 0), "images/cards/Tidark Production.png", 27),
+	    	new Card("Toc Production", TypesOfCards.YOUTUBER, new InfosYoutuber(350, 4, 3, 
+	    			TypesOfThemes.HUMOUR_DIVERTISSEMENT, Grades.BASE, 0), "images/cards/Toc Production.png", 28),
+	    	new Card("ZORKA", TypesOfCards.YOUTUBER, new InfosYoutuber(450, 5, 4, 
+	    			TypesOfThemes.HUMOUR_DIVERTISSEMENT, Grades.BASE, 0), "images/cards/ZORKA.png", 29) };
+	
 	public static List<Card> playerCards = new ArrayList<Card>();
 	public static Player player = new Player("Kevin", "#01FE12", 1, 1, new ArrayList<Card>(), new ArrayList<Card>());
 	public static Boolean canPlay = false;
@@ -74,6 +133,9 @@ public class MainClient {
 	public static ChatAccess access;
 	
     public static JFrame frame;
+    
+    public static Integer a = 10;
+    public static final Integer c = 10;
 
     public static void main(String[] args) {
     	
@@ -81,67 +143,19 @@ public class MainClient {
     	 * CARDS-LIST
     	 */
     	
-    	cards_list.add(new Card("Dos de carte", TypesOfCards.BACK, null, "images/cards/DOS_DE_CARTE.png", 0));
-    	cards_list.add(new Card("Amandine Cuisine", TypesOfCards.YOUTUBER, new InfosYoutuber(200, 3, 1, 
-    			TypesOfThemes.VIEPRATIQUE_STYLE_BEAUTE, Grades.BASE, 0), "images/cards/Amandine Cuisine.png", 1));
-    	cards_list.add(new Card("Anthony-Fitness", TypesOfCards.YOUTUBER, new InfosYoutuber(350, 5, 2, TypesOfThemes.SPORT, Grades.BASE, 0),
-    			"images/cards/Anthony-Fitness.png", 2));
-    	cards_list.add(new Card("Aurélie Testenbeauté", TypesOfCards.YOUTUBER, new InfosYoutuber(250, 2, 3, 
-    			TypesOfThemes.VIEPRATIQUE_STYLE_BEAUTE, Grades.BASE, 0), "images/cards/Aurélie Testenbeauté.png", 3));
-    	cards_list.add(new Card("Boost vues 5k", TypesOfCards.SPECIALE, new InfosSpeciale(400, Grades.BASE, 1),
-    			"images/cards/Boost vues 5k.png", 4));
-    	cards_list.add(new Card("CAPTAIN WORKOUT", TypesOfCards.YOUTUBER, new InfosYoutuber(450, 7, 2, TypesOfThemes.SPORT, Grades.BASE, 0),
-    			"images/cards/CAPTAIN WORKOUT.png", 5));
-    	cards_list.add(new Card("Cédric Froment", TypesOfCards.YOUTUBER, new InfosYoutuber(300, 3, 3, TypesOfThemes.EDUCATION, Grades.BASE, 0),
-    			"images/cards/Cédric Froment.png", 6));
-    	cards_list.add(new Card("Ellen LC", TypesOfCards.YOUTUBER, new InfosYoutuber(250, 1, 4, 
-    			TypesOfThemes.VIEPRATIQUE_STYLE_BEAUTE, Grades.BASE, 0), "images/cards/Ellen LC.png", 7));
-    	cards_list.add(new Card("Esprit Riche", TypesOfCards.YOUTUBER, new InfosYoutuber(200, 2, 2, 
-    			TypesOfThemes.EDUCATION, Grades.BASE, 0), "images/cards/Esprit Riche.png", 8));
-    	cards_list.add(new Card("Flomars", TypesOfCards.YOUTUBER, new InfosYoutuber(450, 2, 7, 
-    			TypesOfThemes.GAMING, Grades.BASE, 0), "images/cards/Flomars.png", 9));
-    	cards_list.add(new Card("FrankCotty", TypesOfCards.YOUTUBER, new InfosYoutuber(350, 3, 4, 
-    			TypesOfThemes.MUSIQUE, Grades.BASE, 0), "images/cards/FrankCotty.png", 10));
-    	cards_list.add(new Card("Delete user gamma", TypesOfCards.SPECIALE, new InfosSpeciale(650, Grades.BASE, 2),
-    			"images/cards/Delete user gamma.png", 11));
-    	cards_list.add(new Card("Double ♥", TypesOfCards.SPECIALE, new InfosSpeciale(650, Grades.BASE, 3),
-    			"images/cards/Double ♥.png", 12));
-    	cards_list.add(new Card("Double RTs", TypesOfCards.SPECIALE, new InfosSpeciale(650, Grades.BASE, 4),
-    			"images/cards/Double RTs.png", 13));
-    	cards_list.add(new Card("Fred deBeauxArts", TypesOfCards.YOUTUBER, new InfosYoutuber(300, 3, 3, 
-    			TypesOfThemes.VIEPRATIQUE_STYLE_BEAUTE, Grades.BASE, 0), "images/cards/Fred deBeauxArts.png", 14));
-    	cards_list.add(new Card("Gadu Gaming", TypesOfCards.YOUTUBER, new InfosYoutuber(350, 3, 4, 
-    			TypesOfThemes.GAMING, Grades.BASE, 0), "images/cards/Gadu Gaming.png", 15));
-    	cards_list.add(new Card("JeanFaitTrop", TypesOfCards.YOUTUBER, new InfosYoutuber(350, 4, 3, 
-    			TypesOfThemes.HUMOUR_DIVERTISSEMENT, Grades.BASE, 0), "images/cards/JeanFaitTrop.png", 16));
-    	cards_list.add(new Card("Léonard", TypesOfCards.YOUTUBER, new InfosYoutuber(300, 2, 4, 
-    			TypesOfThemes.HUMOUR_DIVERTISSEMENT, Grades.BASE, 0), "images/cards/Léonard.png", 17));
-    	cards_list.add(new Card("Loulou", TypesOfCards.YOUTUBER, new InfosYoutuber(400, 3, 5, 
-    			TypesOfThemes.HUMOUR_DIVERTISSEMENT, Grades.BASE, 0), "images/cards/Loulou.png", 18));
-    	cards_list.add(new Card("Monte Le Son", TypesOfCards.YOUTUBER, new InfosYoutuber(150, 1, 2, 
-    			TypesOfThemes.MUSIQUE, Grades.BASE, 0), "images/cards/Monte Le Son.png", 19));
-    	cards_list.add(new Card("Napoleon", TypesOfCards.YOUTUBER, new InfosYoutuber(400, 4, 4, 
-    			TypesOfThemes.GAMING, Grades.BASE, 0), "images/cards/Napoleon.png", 20));
-    	cards_list.add(new Card("PikaShoute", TypesOfCards.YOUTUBER, new InfosYoutuber(200, 2, 2, 
-    			TypesOfThemes.HUMOUR_DIVERTISSEMENT, Grades.BASE, 0), "images/cards/PikaShoute.png", 21));
-    	cards_list.add(new Card("RAPH&MAX", TypesOfCards.YOUTUBER, new InfosYoutuber(500, 4, 6, 
-    			TypesOfThemes.HUMOUR_DIVERTISSEMENT, Grades.BASE, 0), "images/cards/RAPH&MAX.png", 22));
-    	cards_list.add(new Card("Roxas_", TypesOfCards.YOUTUBER, new InfosYoutuber(250, 4, 1, 
-    			TypesOfThemes.GAMING, Grades.BASE, 0), "images/cards/Roxas_.png", 23));
-    	cards_list.add(new Card("Samia Tsuki", TypesOfCards.YOUTUBER, new InfosYoutuber(300, 2, 4, 
-    			TypesOfThemes.VIEPRATIQUE_STYLE_BEAUTE, Grades.BASE, 0), "images/cards/Samia Tsuki.png", 24));
-    	cards_list.add(new Card("SophieGuichard", TypesOfCards.YOUTUBER, new InfosYoutuber(150, 1, 2, 
-    			TypesOfThemes.EDUCATION, Grades.BASE, 0), "images/cards/SophieGuichard.png", 25));
-    	cards_list.add(new Card("TheSeB's", TypesOfCards.YOUTUBER, new InfosYoutuber(400, 5, 3, 
-    			TypesOfThemes.GAMING, Grades.BASE, 0), "images/cards/TheSeB's.png", 26));
-    	cards_list.add(new Card("Tidark Production", TypesOfCards.YOUTUBER, new InfosYoutuber(450, 1, 8, 
-    			TypesOfThemes.MUSIQUE, Grades.BASE, 0), "images/cards/Tidark Production.png", 27));
-    	cards_list.add(new Card("Toc Production", TypesOfCards.YOUTUBER, new InfosYoutuber(350, 4, 3, 
-    			TypesOfThemes.HUMOUR_DIVERTISSEMENT, Grades.BASE, 0), "images/cards/Toc Production.png", 28));
-    	cards_list.add(new Card("ZORKA", TypesOfCards.YOUTUBER, new InfosYoutuber(450, 5, 4, 
-    			TypesOfThemes.HUMOUR_DIVERTISSEMENT, Grades.BASE, 0), "images/cards/ZORKA.png", 29));
-    	
-    	playerCards = cards_list;
+    	try{
+    		InputStream flux=new FileInputStream("card.txt"); 
+    		InputStreamReader lecture=new InputStreamReader(flux);
+    		BufferedReader buff=new BufferedReader(lecture);
+    		String ligne;
+    		while ((ligne=buff.readLine())!=null){
+    			System.out.println(ligne);
+    		}
+    		buff.close(); 
+    		}		
+    		catch (Exception e){
+    		System.out.println(e.toString());
+    		}  
     	
     	
     	if (!IsTest){
@@ -169,6 +183,67 @@ public class MainClient {
     		setJFrames();
     	}
     }
+    
+    public static TypesOfCards getTypesOfCardsFile(String type){
+    	
+    	TypesOfCards TOC = null;
+    	
+    	if (type.contains("YOUTUBER")){
+    		TOC=TypesOfCards.YOUTUBER;
+    	}else if (type.contains("SPECIALE")){
+    		TOC=TypesOfCards.SPECIALE;
+    	}else if (type.contains("BACK")){
+    		TOC=TypesOfCards.BACK;
+    	}
+    	
+		return TOC;
+    	
+    }
+    
+    public static TypesOfThemes getThemesFile(String theme){
+    	TypesOfThemes Theme = null;
+    	
+    	if (theme.contains("EDUCATION")){
+    		Theme=TypesOfThemes.EDUCATION;
+    	}else if (theme.contains("GAMING")){
+    		Theme=TypesOfThemes.GAMING;
+    	}else if (theme.contains("HUMOUR_DIVERTISSEMENT")){
+    		Theme=TypesOfThemes.HUMOUR_DIVERTISSEMENT;
+    	}else if (theme.contains("MUSIQUE")){
+    		Theme=TypesOfThemes.MUSIQUE;
+    	}else if (theme.contains("RIEN")){
+    		Theme=TypesOfThemes.RIEN;
+    	}else if (theme.contains("SPORT")){
+    		Theme=TypesOfThemes.SPORT;
+    	}else if (theme.contains("VIEPRATIQUE_STYLE_BEAUTE")){
+    		Theme=TypesOfThemes.VIEPRATIQUE_STYLE_BEAUTE;
+    	}
+    	
+		return Theme;
+    	
+    }
+    
+    public static Grades getGradesFile(String grade){
+    	
+    	Grades Grade = null;
+    	
+    	if (grade.contains("BASE")){
+    		Grade=Grades.BASE;
+    	}else if (grade.contains("ARGENT")){
+    		Grade=Grades.ARGENT;
+    	}else if (grade.contains("BRONZE")){
+    		Grade=Grades.BRONZE;
+    	}else if (grade.contains("DIAMANT")){
+    		Grade=Grades.DIAMANT;
+    	}else if (grade.contains("OR")){
+    		Grade=Grades.OR;
+    	}
+    	
+		return Grade;
+    	
+    	
+    }
+    
     public static void setJFrames(){
          
          UIManager.put("Synthetica.window.decoration", Boolean.FALSE);
@@ -207,6 +282,8 @@ public class MainClient {
                         while (true)
                         	if ((line = in.readLine()) != null){
                         		System.out.println(line);
+                        		String[] contains = line.split(" ");
+                        		String[] containsVir = line.split(",");
                         		if (line.startsWith("startthegame")){
                         			Thread pass = new Thread(new PasserelThread());
                         			pass.start();
@@ -228,37 +305,128 @@ public class MainClient {
                         		}else if(line.startsWith("pioche")){
                         			Thread t = new Thread(new GameFrame.PlaySound("pop.wav"));
                 					t.start();
-                        			
-                        			for (int i = 0; i < cards_list.size(); i++){
-                        				if (Integer.valueOf(line.split(" ")[1]).equals(cards_list.get(i).getId())){
-                        					player.getHandCards().add(cards_list.get(i));
-                        				}
-                        			}                       			
+                					
+                					String name = containsVir[1];
+                					TypesOfCards type = getTypesOfCardsFile(containsVir[2]);
+                					
+                					int followers = 0;
+                					int rts = 0;
+                					int hearts = 0;
+                					TypesOfThemes theme = TypesOfThemes.RIEN;
+                					Grades grade = Grades.BASE;
+                					int id_power = 0;
+                					String path = "";
+                					int id = 0;
+                					
+                					if (type==TypesOfCards.YOUTUBER){
+                						followers = Integer.valueOf(containsVir[3]);
+                    					rts = Integer.valueOf(containsVir[4]);
+                    					hearts = Integer.valueOf(containsVir[5]);
+                    					theme = getThemesFile(containsVir[6]);
+                    					grade = getGradesFile(containsVir[7]);
+                    					id_power = Integer.valueOf(containsVir[8]);
+                    					path = containsVir[9];
+                    					id = Integer.valueOf(containsVir[10]);
+                					}else if(type==TypesOfCards.SPECIALE){
+                						followers = Integer.valueOf(containsVir[3]);
+                						grade = getGradesFile(containsVir[4]);
+                    					id_power = Integer.valueOf(containsVir[5]);
+                    					path = containsVir[6];
+                    					id = Integer.valueOf(containsVir[7]);
+                					}
+                					
+                					
+                					
+                        			if (type==TypesOfCards.YOUTUBER){
+                        				player.getHandCards().add(new Card(name, type, new InfosYoutuber(followers,
+                        						rts, hearts, theme, grade, id_power), path, id));
+                        			}else if(type==TypesOfCards.SPECIALE){
+                        				player.getHandCards().add(new Card(name, type, new InfosSpeciale(followers,
+                        						grade, id_power), path, id));
+                        			}
+                     			
                         			GameFrame.PrepareUpdate();
                         			
                         		}else if(line.startsWith("pose")){
                         			GameFrame.twiit_list.clear();
                         			GameFrame.cards_list.clear();
                         			
-                        			for (int i = 0;i < cards_list.size();i++){
-                        				if (Integer.valueOf(line.split(" ")[1]).equals(cards_list.get(i).getId())){
-                        					GameFrame.lastAdvCard = cards_list.get(i);
-                        				}
-                        			}						
+                        			String name = containsVir[2];
+                					TypesOfCards type = getTypesOfCardsFile(containsVir[3]);
+                					
+                					int followers = 0;
+                					int rts = 0;
+                					int hearts = 0;
+                					TypesOfThemes theme = TypesOfThemes.RIEN;
+                					Grades grade = Grades.BASE;
+                					int id_power = 0;
+                					String path = "";
+                					int id = 0;
+                					
+                					if (type==TypesOfCards.YOUTUBER){
+                						followers = Integer.valueOf(containsVir[4]);
+                    					rts = Integer.valueOf(containsVir[5]);
+                    					hearts = Integer.valueOf(containsVir[6]);
+                    					theme = getThemesFile(containsVir[7]);
+                    					grade = getGradesFile(containsVir[8]);
+                    					id_power = Integer.valueOf(containsVir[9]);
+                    					path = containsVir[10];
+                    					id = Integer.valueOf(containsVir[11]);
+                					}else if(type==TypesOfCards.SPECIALE){
+                						followers = Integer.valueOf(containsVir[4]);
+                						grade = getGradesFile(containsVir[5]);
+                    					id_power = Integer.valueOf(containsVir[6]);
+                    					path = containsVir[7];
+                    					id = Integer.valueOf(containsVir[8]);
+                					}
+
+                        			if (type==TypesOfCards.YOUTUBER){
+                        				GameFrame.lastAdvCard=new Card(name, type, new InfosYoutuber(followers,
+                        						rts, hearts, theme, grade, id_power), path, id);
+                        			}else if(type==TypesOfCards.SPECIALE){
+                        				GameFrame.lastAdvCard=new Card(name, type, new InfosSpeciale(followers,
+                        						grade, id_power), path, id);
+                        			}
+					
         							if (GameFrame.lastAdvCard.getType().equals(TypesOfCards.YOUTUBER)){						
         								
         								GameFrame.twiitListCard.add(GameFrame.lastAdvCard);
         								GameFrame.twiitListPlayer.add(GameFrame.Adversaire);
         								
         							}
-        							GameFrame.advFollowers=(int) (Integer.valueOf(line.split(" ")[2]));
+        							GameFrame.advFollowers=(int) (Integer.valueOf(line.split(",")[1]));
         							GameFrame.content.removeAll();
         							GameFrame.UpdateContent();
                         		}else if(line.startsWith("toursuivant")){
                         			canPlay=true;
+                        			GameFrame.alreadyPlay.clear();
                         			access.send("pioche");
                         			GameFrame.playerFollowers+=100;
                         			GameFrame.PrepareUpdate();
+                        		}else if(line.startsWith("dammage")){ //pense a faire un plusieurs en 1
+                        			int place = Integer.valueOf(contains[1]);
+                        			for (int i = 0; i < GameFrame.twiitListCard.size(); i++){
+                        				if (GameFrame.twiitListCard.get(place) == GameFrame.twiitListCard.get(i)){
+                        					
+                        					GameFrame.twiitListCard.get(i).getInfos().setHearts(Integer.valueOf(contains[2]));
+                        					
+                        					if (GameFrame.twiitListCard.get(i).getInfos().getHearts() <= 0){
+                        						GameFrame.twiitListCard.remove(i);
+                        						/*
+                        						 * Ne pas oublier d'enlever le player !!!
+                        						 */
+                        						GameFrame.twiitListPlayer.remove(i);
+                        					}
+                        					for (int a = 0; a<cards_list.length;a++){
+                        						if (cards_list[a].getType()==TypesOfCards.YOUTUBER){
+                        							System.out.println(cards_list[a].getName()+" "+cards_list[a].getInfos().getHearts());
+                        						}
+                        						
+                        					}
+                        					GameFrame.PrepareUpdate();
+                        					break;
+                        				}
+                        			}
                         		}
                         		//
                         	}

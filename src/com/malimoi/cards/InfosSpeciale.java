@@ -52,4 +52,40 @@ public class InfosSpeciale extends Infos{
 		return grade;
 	}
 
+	@Override
+	public void setFollowers(int followers) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setRts(int rts) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setHearts(int hearts) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setTheme(TypesOfThemes theme) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setGrade(Grades grade) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setId_power(int id_power) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }
