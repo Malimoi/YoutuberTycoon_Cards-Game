@@ -401,6 +401,7 @@ public class MainClient {
                         			canPlay=true;
                         			GameFrame.alreadyPlay.clear();
                         			access.send("pioche");
+                        			GameFrame.specialMod=0;
                         			GameFrame.playerFollowers+=100;
                         			GameFrame.PrepareUpdate();
                         		}else if(line.startsWith("dammage")){ //pense a faire un plusieurs en 1
@@ -417,16 +418,15 @@ public class MainClient {
                         						 */
                         						GameFrame.twiitListPlayer.remove(i);
                         					}
-                        					for (int a = 0; a<cards_list.length;a++){
-                        						if (cards_list[a].getType()==TypesOfCards.YOUTUBER){
-                        							System.out.println(cards_list[a].getName()+" "+cards_list[a].getInfos().getHearts());
-                        						}
-                        						
-                        					}
+
                         					GameFrame.PrepareUpdate();
                         					break;
                         				}
                         			}
+                        		}else if(line.startsWith("views")){
+                        			int views = Integer.valueOf(contains[2]);
+                        			Thread th = new Thread(new GameFrame.AnimationViewsThread(Integer.valueOf(contains[1]), views));
+                        			th.start();
                         		}
                         		//
                         	}

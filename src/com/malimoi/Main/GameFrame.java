@@ -99,6 +99,8 @@ public class GameFrame extends JFrame{
 	public static Card twiitSelect = null;
 	public static List<Card> alreadyPlay = new ArrayList<Card>();
 	
+	public static int specialMod = 0;
+	
 	public GameFrame(){
 		
 		
@@ -150,14 +152,6 @@ public class GameFrame extends JFrame{
 			
 			note.setText(n+s);
 			
-			p++;
-			
-			// - SEULEMENT POUR FAIRE DES TESTS SOLO !
-			
-			if (p==100000000){
-				advTrouve=true;
-			}
-			
 		}
 		
 		note.setText("Adversaire trouvé !");
@@ -202,13 +196,15 @@ public class GameFrame extends JFrame{
 	public static void AnimViews(int nbPl, int addViews){
 		JLabel lab = nbViews1;
 		int views = playerViews;
-		final int max = playerViews+addViews;
+		int max = playerViews+addViews;
+		int idition = (int) (addViews / 1000);
 		if (nbPl==2){
 			lab=nbViews2;
 			views = advViews;
+			max = advViews+addViews;
 		}
 		
-		for (int i = playerViews; i <= max; i=i+2){
+		for (int i = views; i <= max; i=i+idition){
 			lab.setText(i+"");
 			if (nbPl==1){
 				playerViews=i;
@@ -221,7 +217,7 @@ public class GameFrame extends JFrame{
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-		}
+		}	
 		
 	}
 	
@@ -311,16 +307,16 @@ public class GameFrame extends JFrame{
 							
 							if (card.equals(cards_list.get(a))){
 								
-								if (MainClient.player.getHandCards().get(a).getInfos().getFollowers()<=playerFollowers){
+								lastPlayerCard = MainClient.player.getHandCards().get(a);	
+								
+								if (lastPlayerCard.getInfos().getFollowers()<=playerFollowers){
 									
-									playerFollowers=(int) (playerFollowers-MainClient.player.getHandCards().get(a).getInfos().getFollowers()/2);
+									playerFollowers=(int) (playerFollowers-lastPlayerCard.getInfos().getFollowers()/2);
 									
 									pointerCard = -1;
 									
 									twiit_list.clear();
-									cards_list.clear();
-									
-									lastPlayerCard = MainClient.player.getHandCards().get(a);						
+									cards_list.clear();														
 									
 									MainClient.access.send("pose "+MainClient.player.getHandCards().get(a).getId()+" "+playerFollowers);
 									
@@ -329,6 +325,17 @@ public class GameFrame extends JFrame{
 										twiitListCard.add(lastPlayerCard);
 										twiitListPlayer.add(MainClient.player);
 										
+									}
+									
+									MainClient.player.getHandCards().remove(a);
+									content.removeAll();
+									
+								}else if( (lastPlayerCard.getInfos().getFollowers() / 2)<=playerFollowers && lastPlayerCard.getType().equals(TypesOfCards.SPECIALE)){
+									
+									MainClient.access.send("pose "+MainClient.player.getHandCards().get(a).getId()+" "+playerFollowers);
+									
+									if (lastPlayerCard.getInfos().getId_power()==2){
+										specialMod=2;
 									}
 									
 									MainClient.player.getHandCards().remove(a);
@@ -388,6 +395,10 @@ public class GameFrame extends JFrame{
 								if (twiitListPlayer.get(twiitListCard.size()-1-a)==MainClient.player){
 									t.setColor(Color.decode("#E1E0E0"));
 								}
+							}else{
+								if (twiitListPlayer.get(twiitListCard.size()-1-a)==Adversaire){
+									t.setColor(Color.decode("#FEB3B3"));
+								}
 							}
 						
 							apercuCard.setText("Aperçu:");
@@ -411,8 +422,14 @@ public class GameFrame extends JFrame{
 								}
 							}else{
 								if (twiitListPlayer.get(twiitListCard.size()-1-a)==MainClient.player){
-									t.setColor(Color.decode("#00E62E"));
-									break;
+									t.setColor(Color.decode("#E7FBED"));
+									if (twiitSelect==twiitListCard.get(twiitListCard.size()-1-a)){
+										t.setColor(Color.decode("#B3FEB5"));
+										break;
+									}					
+								}if (twiitListPlayer.get(twiitListCard.size()-1-a)==Adversaire){
+										t.setColor(Color.WHITE);
+										break;				
 								}
 							}
 						}		
@@ -424,8 +441,7 @@ public class GameFrame extends JFrame{
 				@Override
 				public void mousePressed(MouseEvent e){
 						
-					Thread th = new Thread(new AnimationViewsThread(1, 4000));
-					th.start();
+					
 					
 					if (twiitSelect == null){
 						for (int a = 0;a<twiit_list.size();a++){
@@ -433,19 +449,29 @@ public class GameFrame extends JFrame{
 							if (t.equals(twiit_list.get(a))){
 								
 								if (twiitListPlayer.get(twiitListCard.size()-1-a)==MainClient.player){
-										boolean already = false;
-										for (int b = 0; b < alreadyPlay.size(); b++){
-											if (alreadyPlay.get(b).equals(twiitListCard.get(twiitListCard.size()-1-a))){
-												already=true;
-												break;
+										if (specialMod>0){
+											if (specialMod==2){
+												
 											}
-										}
-										if(!already){
-											t.setColor(Color.decode("#00E62E"));
-											twiitSelect=twiitListCard.get(twiitListCard.size()-1-a);
 											
+											specialMod=0;
+											break;
+										}else{
+											boolean already = false;
+											for (int b = 0; b < alreadyPlay.size(); b++){
+												if (alreadyPlay.get(b).equals(twiitListCard.get(twiitListCard.size()-1-a))){
+													already=true;
+													break;
+												}
+											}
+											if(!already){
+												t.setColor(Color.decode("#B3FEB5"));
+												twiitSelect=twiitListCard.get(twiitListCard.size()-1-a);
+												
+											}
+											break;		
 										}
-										break;			
+											
 								}
 								
 								
@@ -677,7 +703,21 @@ public class GameFrame extends JFrame{
 				}
 				@Override
 				public void mousePressed(MouseEvent e){
-					
+					if (twiitSelect!=null){
+						int views = twiitSelect.getInfos().getRts()*1000*2;
+						Thread th = new Thread(new AnimationViewsThread(1, views));
+						th.start();
+						
+						MainClient.access.send("views "+views);
+						
+						minia.redefine(165, 95);
+						minia.setBounds(10, 30+17+28+25, 165, 95);
+						
+						alreadyPlay.add(twiitSelect);
+						twiitSelect=null;
+						
+						PrepareUpdate();
+					}
 				}
 			});
 			
@@ -843,7 +883,6 @@ public class GameFrame extends JFrame{
 		@Override
 		public void run() {
 				AnimViews(nbPl, addViews);
-			
 		}
 		
 	}
