@@ -197,7 +197,7 @@ public class GameFrame extends JFrame{
 		JLabel lab = nbViews1;
 		int views = playerViews;
 		int max = playerViews+addViews;
-		int idition = (int) (addViews / 1000);
+		int idition = (int) (addViews / 500);
 		if (nbPl==2){
 			lab=nbViews2;
 			views = advViews;
