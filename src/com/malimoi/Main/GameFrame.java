@@ -273,10 +273,13 @@ public class GameFrame extends JFrame{
 							if (pointerCard != a){
 								
 								pointerCard = a;
-								content.removeAll();
-								cards_list.clear();
-								twiit_list.clear();
-								UpdateContent();
+								cards_list.get(a).setBounds(LARGEUR/2 + TWIIT_WIDTH/2 - a*80 - CARDS_WIDTH,
+										HAUTEUR - CARDS_HEIGHT - 100, CARDS_WIDTH, CARDS_HEIGHT);
+								cards_list.get(a).repaint();
+//								content.removeAll();
+//								cards_list.clear();
+//								twiit_list.clear();
+//								UpdateContent();
 								
 							}
 							
@@ -289,12 +292,16 @@ public class GameFrame extends JFrame{
 				@Override
 				public void mouseExited(MouseEvent e) {
 
+					cards_list.get(pointerCard).setBounds(LARGEUR/2 + TWIIT_WIDTH/2 - pointerCard*80 - CARDS_WIDTH,
+							HAUTEUR - CARDS_HEIGHT - 30, CARDS_WIDTH, CARDS_HEIGHT);
+					cards_list.get(pointerCard).repaint();
 					pointerCard = -1;
 					
-					cards_list.clear();
-					twiit_list.clear();
-					content.removeAll();
-					UpdateContent();
+					
+//					cards_list.clear();
+//					twiit_list.clear();
+//					content.removeAll();
+//					UpdateContent();
 				}
 				
 				@Override
@@ -488,6 +495,7 @@ public class GameFrame extends JFrame{
 										break;
 									}
 								}
+								
 								if (twiitListPlayer.get(twiitListCard.size()-1-a)==Adversaire){
 									for (int b = 0; b<twiitListCard.size(); b++){
 										if (twiitListCard.get(b).equals(twiitSelect) && twiitListPlayer.get(b).equals(MainClient.player)){
