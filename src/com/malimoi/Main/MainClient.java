@@ -364,6 +364,7 @@ public class MainClient {
                 					int id = 0;
                 					
                 					if (type==TypesOfCards.YOUTUBER){
+                						GameFrame.poseTwiit=true;
                 						followers = Integer.valueOf(containsVir[4]);
                     					rts = Integer.valueOf(containsVir[5]);
                     					hearts = Integer.valueOf(containsVir[6]);
