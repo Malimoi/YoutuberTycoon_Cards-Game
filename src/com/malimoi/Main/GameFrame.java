@@ -74,6 +74,10 @@ public class GameFrame extends JFrame{
 	public static List<ColorPanel> twiit_list = new ArrayList<ColorPanel>();
 	public static List<Player> twiitListPlayer = new ArrayList<Player>();
 	public static final List<Card> twiitListCard = new ArrayList<Card>();
+	public static List<String> logs = new ArrayList<String>();
+	
+	public static JLabel msg_log1 = new JLabel();
+	public static JLabel msg_log2 = new JLabel();
 	
 	public static int nbPlayerCards = 0;
 	public static int nbAdvCards = 0;
@@ -103,6 +107,12 @@ public class GameFrame extends JFrame{
 	
 	public static Boolean poseTwiit = false;
 	
+	public static Color[] colorTab = {Color.RED,Color.YELLOW,Color.BLACK,Color.PINK,Color.GREEN,Color.BLUE,Color.ORANGE,Color.CYAN,Color.GRAY,Color.MAGENTA};
+	public static Color[] colorTabOrange = {Color.decode("#E5B65A"),Color.decode("#E6B34D"),Color.decode("#E3AC3C"),Color.decode("#E3A832"),Color.decode("#E2A428"),
+			Color.decode("#E2A01B"),Color.decode("#E29C11"),Color.decode("#E29908")};
+	public static Color[] colorTabGreen = {Color.decode("#77DF5C"),Color.decode("#6DDE51"),Color.decode("#63DC45"),Color.decode("#5CDB3C"),Color.decode("#55DB34"),
+			Color.decode("#4DD82B"),Color.decode("#46D921"),Color.decode("#3FD919")};
+	
 	public GameFrame(){
 		
 		
@@ -122,6 +132,16 @@ public class GameFrame extends JFrame{
 		this.setSize(LARGEUR, HAUTEUR);
 		this.setVisible(true);
 		
+		JPanel rideau = new JPanel();
+		rideau.setLayout(null);
+		rideau.setBackground(Color.RED);
+		rideau.setPreferredSize(new Dimension(LARGEUR, HAUTEUR));
+		rideau.setBounds(0, 0, LARGEUR, HAUTEUR);
+		
+		content.add(rideau);
+		
+		
+		
 		/* Recherche d'adversaire, entré dans l'arène */
 		MainClient.access.send("join");
 		
@@ -133,289 +153,80 @@ public class GameFrame extends JFrame{
 		note.setForeground(Color.WHITE);
 		note.setHorizontalAlignment(JLabel.CENTER);
 		note.setBounds(0, HAUTEUR/2-40, LARGEUR, 40);
-		content.add(note);
+		rideau.add(note);
 		
-		int p = 1;
+		Random r = new Random();
+		int x = -100;
+		int y = 0;
+		int total = 0;
 		
-		while(!advTrouve){
-			
-			try {
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-			String s = "";
-			
-			for (int i = 0;i<p%4;i++){
-				s+=".";
-			}
-			
-			note.setText(n+s);
-			
-		}
+		boolean boucle = true;
 		
-		note.setText("Adversaire trouvé !");
-		
-		try {
-			Thread.sleep(2000);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		content.remove(note);
-		
-		
-		
-		
-	}
-	
-	public static void StartGame(Player adversaire){
-		try {
-			Thread.sleep(3000);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		Adversaire = adversaire;
-		listPlayers.add(MainClient.player);
-		listPlayers.add(adversaire);
-		
-		content.setBackground(Color.decode("#F1F9FE"));
-		
-		//InitializeContent();
-		
-		/*
-		 * UPDATE
-		 */
-		
-		UpdateContent();
-	}
-	
-	public static void AnimViews(int nbPl, int addViews){
-		JLabel lab = nbViews1;
-		int views = playerViews;
-		int max = playerViews+addViews;
-		int idition = (int) (addViews / 500);
-		if (nbPl==2){
-			lab=nbViews2;
-			views = advViews;
-			max = advViews+addViews;
-		}
-		
-		for (int i = views; i <= max; i=i+idition){
-			lab.setText(i+"");
-			if (nbPl==1){
-				playerViews=i;
+		while(boucle){
+			if (x>LARGEUR){
+				x=0;
+				y+=100;
 			}else{
-				advViews=i;
+				x+=100;
 			}
+			if (! (y>(HAUTEUR+100))){
+				JPanel carre = new JPanel();
+				carre.setBounds(x, y, 100, 100);
+				carre.setBackground(colorTabOrange[r.nextInt(colorTabOrange.length)]);
+				rideau.add(carre);
+				carre.repaint();
+				total+=1;
+			}else{
+				boucle=false;
+			}
+			
+		}
+		int millisec = 0;
+		while(!advTrouve){
 			try {
 				Thread.sleep(1);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-		}	
-		
-	}
-	
-	public static void AnimAddTwiit(ColorPanel cp){
-		for (int i = 0; i<TWIIT_HEIGHT-1; i++){
+				Color c = colorTabOrange[r.nextInt(colorTabOrange.length)];
+				int comp = r.nextInt(total);
+				rideau.getComponent(comp).setBackground(c);
+				note.repaint();
+				rideau.getComponent(comp).repaint();
 			
-			cp.setBounds((int)cp.getLocation().getX(), (int)cp.getLocation().getY()+1,
-					(int)cp.getBounds().getWidth(), (int)cp.getBounds().getHeight());
-			cp.repaint();
+		}
+		
+		note.setText("Adversaire trouvé !");
+		
+		for (int i = 0;i<HAUTEUR;i++){
+			rideau.setBounds(0, 0, LARGEUR, HAUTEUR-i);
+			rideau.repaint();
 			try {
-				Thread.sleep(5);
+				Thread.sleep(2);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
+		
+		
 	}
 	
-	public static void AnimAddTwiit2(ColorPanel cp){
-		
-		content.add(cp);
-		for (int i = 0; i<TWIIT_HEIGHT+1; i++){
-			cp.setBounds((int)cp.getLocation().getX(), (int)cp.getLocation().getY(),
-					(int)cp.getBounds().getWidth(), i);
-			cp.repaint();
+	public static void UpdateDisplayLogs(){
+		int maxLogsDisplay = logs.size()>2?2:logs.size();
+		for(int i = 0;i<maxLogsDisplay;i++){
+			JLabel ml = i==0?msg_log1:msg_log2;
+			ml.setFont(new Font("Tahoma", Font.PLAIN, 16));
+			ml.setText(logs.get(logs.size()-i-1));
+			ml.setForeground(Color.DARK_GRAY);
+			ml.setHorizontalAlignment(JLabel.LEFT);
+			ml.setBounds(LARGEUR/2 - TWIIT_WIDTH/2 + 110, TWIIT_HEIGHT*5+22+i*25, 500, 20);
+			content.add(ml);
 		}
-		
 	}
 	
-	public static void PrepareUpdate(){
-		content.removeAll();
-		cards_list.clear();
-		twiit_list.clear();
-		UpdateContent();
-	}
-	
-	public static void InitializeContent(){
-		
-		for (int i = 0;i<5;i++){
-			Random r = new Random();
-			Card card = MainClient.playerCards.get(r.nextInt(29)+1);
-			MainClient.player.getHandCards().add(card);
-			System.out.println(card.getName());
-		}
-		
-		
-	}
-	
-	public static void InitializeBackcards(){
-		
-		if (pointerCard>=0){
-			livePlayerCard = new AddCards(MainClient.player.getHandCards().get(pointerCard).getPath(), 280, 403);
-		}else{
-			livePlayerCard = new AddCards(lastPlayerCard.getPath(), 280, 403);
-		}		
-		liveAdvCard = new AddCards("images/cards/DOS_DE_CARTE.png", 280, 403);
-		
-		livePlayerCard.setBounds(LARGEUR/2 - TWIIT_WIDTH/2 - 300 + 0*(300+2*10+TWIIT_WIDTH), 650 - 403, 280, 403);	
-		liveAdvCard.setBounds(LARGEUR/2 - TWIIT_WIDTH/2 - 300 + 1*(300+2*10+TWIIT_WIDTH), 650 - 403, 280, 403);
-		
-		content.add(livePlayerCard);	
-		content.add(liveAdvCard);
-		
-	}
-	
-	public static void UpdateContent(){
-		
-		for (int i = 0;i<MainClient.player.getHandCards().size();i++){
-			AddCards card = new AddCards(MainClient.player.getHandCards().get(i).getPath(), CARDS_WIDTH, CARDS_HEIGHT);
-			card.addMouseListener(new MouseAdapter() {
-
-				@Override
-				public void mouseEntered(MouseEvent e) {
-					
-					for (int a = 0;a<cards_list.size();a++){
-						
-						if (card.equals(cards_list.get(a))){
-							
-							if (pointerCard != a){
-								
-								pointerCard = a;
-								cards_list.get(a).setBounds(LARGEUR/2 + TWIIT_WIDTH/2 - a*80 - CARDS_WIDTH,
-										HAUTEUR - CARDS_HEIGHT - 100, CARDS_WIDTH, CARDS_HEIGHT);
-								cards_list.get(a).repaint();
-								
-								apercuCard.setText("Aperçu:");
-								livePlayerCard.setPath(MainClient.player.getHandCards().get(a).getPath());
-								break;
-//								content.removeAll();
-//								cards_list.clear();
-//								twiit_list.clear();
-//								UpdateContent();
-								
-							}
-							
-						}	
-						
-					}
-					
-				}
-				
-				@Override
-				public void mouseExited(MouseEvent e) {
-
-					cards_list.get(pointerCard).setBounds(LARGEUR/2 + TWIIT_WIDTH/2 - pointerCard*80 - CARDS_WIDTH,
-							HAUTEUR - CARDS_HEIGHT - 30, CARDS_WIDTH, CARDS_HEIGHT);
-					cards_list.get(pointerCard).repaint();
-					pointerCard = -1;
-					
-					apercuCard.setText("Dernière carte jouée:");
-					livePlayerCard.setPath(lastPlayerCard.getPath());
-//					cards_list.clear();
-//					twiit_list.clear();
-//					content.removeAll();
-//					UpdateContent();
-				}
-				
-				@Override
-				public void mousePressed(MouseEvent e) {
-					Thread t = new Thread(new PlaySound("click.wav"));
-					t.start();
-					if (MainClient.canPlay){
-						
-						for (int a = 0;a<cards_list.size();a++){
-							
-							if (card.equals(cards_list.get(a))){
-								
-								lastPlayerCard = MainClient.player.getHandCards().get(a);	
-								
-								if (lastPlayerCard.getInfos().getFollowers()<=playerFollowers){
-									
-									poseTwiit=true;
-									
-									playerFollowers=(int) (playerFollowers-lastPlayerCard.getInfos().getFollowers()/2);
-									
-									pointerCard = -1;
-									
-									twiit_list.clear();
-									cards_list.clear();														
-									
-									MainClient.access.send("pose "+MainClient.player.getHandCards().get(a).getId()+" "+playerFollowers);
-									
-									if (lastPlayerCard.getType().equals(TypesOfCards.YOUTUBER)){						
-										
-										twiitListCard.add(lastPlayerCard);
-										twiitListPlayer.add(MainClient.player);
-										
-									}
-									
-									MainClient.player.getHandCards().remove(a);
-									content.removeAll();
-									
-									UpdateContent();
-									
-								}else if( (lastPlayerCard.getInfos().getFollowers() / 2)<=playerFollowers && lastPlayerCard.getType().equals(TypesOfCards.SPECIALE)){
-									
-									MainClient.access.send("pose "+MainClient.player.getHandCards().get(a).getId()+" "+playerFollowers);
-									
-									if (lastPlayerCard.getInfos().getId_power()==2){
-										specialMod=2;
-									}
-									
-									MainClient.player.getHandCards().remove(a);
-									content.removeAll();
-									UpdateContent();
-								}
-								
-							}		
-							
-						}
-						
-					}
-			
-					
-				}
-
-            });
-			if (pointerCard>=0){
-				if (i==pointerCard){
-					card.setBounds(LARGEUR/2 + TWIIT_WIDTH/2 - i*80 - CARDS_WIDTH, HAUTEUR - CARDS_HEIGHT - 100, CARDS_WIDTH, CARDS_HEIGHT);
-				}else{
-					card.setBounds(LARGEUR/2 + TWIIT_WIDTH/2 - i*80 - CARDS_WIDTH, HAUTEUR - CARDS_HEIGHT - 30, CARDS_WIDTH, CARDS_HEIGHT);
-				}
-				
-			}else{
-				card.setBounds(LARGEUR/2 + TWIIT_WIDTH/2 - i*80 - CARDS_WIDTH, HAUTEUR - CARDS_HEIGHT - 30, CARDS_WIDTH, CARDS_HEIGHT);
-			}
-			
-			content.add(card);
-			
-			cards_list.add(card);
-		}
-		
-		/*
-		 * Fake twiits
-		 */
+	public static void UpdateTwiitsLine(){
 		int max = twiitListCard.size();
 		if (max >= 5){
 			max=5;
@@ -628,6 +439,270 @@ public class GameFrame extends JFrame{
 				
 		}	
 		poseTwiit=false;
+	}
+	
+	public static void StartGame(Player adversaire){
+		try {
+			Thread.sleep(3000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		Adversaire = adversaire;
+		listPlayers.add(MainClient.player);
+		listPlayers.add(adversaire);
+		
+		//InitializeContent();
+		
+		/*
+		 * UPDATE
+		 */
+		
+		UpdateContent();
+	}
+	
+	public static void AnimViews(int nbPl, int addViews){
+		JLabel lab = nbViews1;
+		int views = playerViews;
+		int max = playerViews+addViews;
+		int idition = (int) (addViews / 500);
+		if (nbPl==2){
+			lab=nbViews2;
+			views = advViews;
+			max = advViews+addViews;
+		}
+		
+		for (int i = views; i <= max; i=i+idition){
+			lab.setText(i+"");
+			if (nbPl==1){
+				playerViews=i;
+			}else{
+				advViews=i;
+			}
+			try {
+				Thread.sleep(1);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}	
+		
+	}
+	
+	public static void AnimAddTwiit(ColorPanel cp){
+		for (int i = 0; i<TWIIT_HEIGHT-1; i++){
+			
+			cp.setBounds((int)cp.getLocation().getX(), (int)cp.getLocation().getY()+1,
+					(int)cp.getBounds().getWidth(), (int)cp.getBounds().getHeight());
+			cp.repaint();
+			try {
+				Thread.sleep(5);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	public static void AnimAddTwiit2(ColorPanel cp){
+		
+		content.add(cp);
+		for (int i = 0; i<TWIIT_HEIGHT+1; i++){
+			cp.setBounds((int)cp.getLocation().getX(), (int)cp.getLocation().getY(),
+					(int)cp.getBounds().getWidth(), i);
+			cp.repaint();
+		}
+		
+	}
+	
+	public static void PrepareUpdate(){
+		content.removeAll();
+		cards_list.clear();
+		twiit_list.clear();
+		UpdateContent();
+	}
+	
+	public static void InitializeContent(){
+		
+		for (int i = 0;i<5;i++){
+			Random r = new Random();
+			Card card = MainClient.playerCards.get(r.nextInt(29)+1);
+			MainClient.player.getHandCards().add(card);
+			System.out.println(card.getName());
+		}
+		
+		
+	}
+	
+	public static void InitializeBackcards(){
+		
+		if (pointerCard>=0){
+			livePlayerCard = new AddCards(MainClient.player.getHandCards().get(pointerCard).getPath(), 280, 403);
+		}else{
+			livePlayerCard = new AddCards(lastPlayerCard.getPath(), 280, 403);
+		}		
+		liveAdvCard = new AddCards("images/cards/DOS_DE_CARTE.png", 280, 403);
+		
+		livePlayerCard.setBounds(LARGEUR/2 - TWIIT_WIDTH/2 - 300 + 0*(300+2*10+TWIIT_WIDTH), 650 - 403, 280, 403);	
+		liveAdvCard.setBounds(LARGEUR/2 - TWIIT_WIDTH/2 - 300 + 1*(300+2*10+TWIIT_WIDTH), 650 - 403, 280, 403);
+		
+		content.add(livePlayerCard);	
+		content.add(liveAdvCard);
+		
+	}
+	
+	public static void UpdateTwiits(){
+		
+		for (int i = 0;i<twiit_list.size();i++){
+			twiit_list.get(i).setBounds(0,0,0,0);
+			twiit_list.get(i).repaint();
+			content.remove(twiit_list.get(i));
+		}
+		twiit_list.clear();
+		UpdateTwiitsLine();
+	}
+	
+	public static void UpdateContent(){
+		
+		for (int i = 0;i<MainClient.player.getHandCards().size();i++){
+			AddCards card = new AddCards(MainClient.player.getHandCards().get(i).getPath(), CARDS_WIDTH, CARDS_HEIGHT);
+			card.addMouseListener(new MouseAdapter() {
+
+				@Override
+				public void mouseEntered(MouseEvent e) {
+					
+					for (int a = 0;a<cards_list.size();a++){
+						
+						if (card.equals(cards_list.get(a))){
+							
+							if (pointerCard != a){
+								
+								pointerCard = a;
+								cards_list.get(a).setBounds(LARGEUR/2 + TWIIT_WIDTH/2 - a*80 - CARDS_WIDTH,
+										HAUTEUR - CARDS_HEIGHT - 100, CARDS_WIDTH, CARDS_HEIGHT);
+								cards_list.get(a).repaint();
+								
+								apercuCard.setText("Aperçu:");
+								livePlayerCard.setPath(MainClient.player.getHandCards().get(a).getPath());
+								break;
+//								content.removeAll();
+//								cards_list.clear();
+//								twiit_list.clear();
+//								UpdateContent();
+								
+							}
+							
+						}	
+						
+					}
+					
+				}
+				
+				@Override
+				public void mouseExited(MouseEvent e) {
+					
+					if (pointerCard!=-1){
+						cards_list.get(pointerCard).setBounds(LARGEUR/2 + TWIIT_WIDTH/2 - pointerCard*80 - CARDS_WIDTH,
+								HAUTEUR - CARDS_HEIGHT - 30, CARDS_WIDTH, CARDS_HEIGHT);
+						cards_list.get(pointerCard).repaint();
+						pointerCard = -1;
+						
+						apercuCard.setText("Dernière carte jouée:");
+						livePlayerCard.setPath(lastPlayerCard.getPath());
+//						cards_list.clear();
+//						twiit_list.clear();
+//						content.removeAll();
+//						UpdateContent();
+					}
+					
+				}
+				
+				@Override
+				public void mousePressed(MouseEvent e) {
+					Thread t = new Thread(new PlaySound("click.wav"));
+					t.start();
+					if (MainClient.canPlay){
+						
+						for (int a = 0;a<cards_list.size();a++){
+							
+							if (card.equals(cards_list.get(a))){
+								
+								lastPlayerCard = MainClient.player.getHandCards().get(a);	
+								
+								if (lastPlayerCard.getInfos().getFollowers()<=playerFollowers){
+									
+									
+									
+									playerFollowers=(int) (playerFollowers-lastPlayerCard.getInfos().getFollowers()/2);
+									
+									pointerCard = -1;
+									
+									cards_list.get(a).setBounds(0, 0, 0, 0);												
+									
+									MainClient.access.send("pose "+MainClient.player.getHandCards().get(a).getId()+" "+playerFollowers);
+									
+									if (lastPlayerCard.getType().equals(TypesOfCards.YOUTUBER)){						
+										poseTwiit=true;
+										GameFrame.logs.add("<html><font color=blue>"+MainClient.player.getName()+"</font> pose"
+                            					+ " <font color=black>"+GameFrame.lastPlayerCard.getName()+"</font></html>");
+										twiitListCard.add(lastPlayerCard);
+										twiitListPlayer.add(MainClient.player);
+										
+									}
+									
+									MainClient.player.getHandCards().remove(a);
+									
+									cards_list.get(a).repaint();
+									cards_list.remove(a);
+									
+									UpdateTwiits();
+									//content.removeAll();
+									
+									//UpdateContent();
+									
+								}else if( (lastPlayerCard.getInfos().getFollowers() / 2)<=playerFollowers && lastPlayerCard.getType().equals(TypesOfCards.SPECIALE)){
+									
+									MainClient.access.send("pose "+MainClient.player.getHandCards().get(a).getId()+" "+playerFollowers);
+									
+									if (lastPlayerCard.getInfos().getId_power()==2){
+										specialMod=2;
+									}
+									
+									MainClient.player.getHandCards().remove(a);
+									
+									content.removeAll();
+									UpdateContent();
+								}
+								
+							}		
+							
+						}
+						
+					}
+			
+					
+				}
+
+            });
+			if (pointerCard>=0){
+				if (i==pointerCard){
+					card.setBounds(LARGEUR/2 + TWIIT_WIDTH/2 - i*80 - CARDS_WIDTH, HAUTEUR - CARDS_HEIGHT - 100, CARDS_WIDTH, CARDS_HEIGHT);
+				}else{
+					card.setBounds(LARGEUR/2 + TWIIT_WIDTH/2 - i*80 - CARDS_WIDTH, HAUTEUR - CARDS_HEIGHT - 30, CARDS_WIDTH, CARDS_HEIGHT);
+				}
+				
+			}else{
+				card.setBounds(LARGEUR/2 + TWIIT_WIDTH/2 - i*80 - CARDS_WIDTH, HAUTEUR - CARDS_HEIGHT - 30, CARDS_WIDTH, CARDS_HEIGHT);
+			}
+			
+			content.add(card);
+			
+			cards_list.add(card);
+		}
+		
+		UpdateTwiitsLine();
+		
 //		JPanel twiit_line = new ColorPanel(Color.WHITE, true, TWIIT_WIDTH, TWIIT_HEIGHT*5);
 //		twiit_line.setBounds(LARGEUR/2 - TWIIT_WIDTH/2, 10, TWIIT_WIDTH, TWIIT_HEIGHT*5);
 //		
@@ -680,6 +755,8 @@ public class GameFrame extends JFrame{
 			content.add(tourButton);
 			
 		}
+		
+		UpdateDisplayLogs();
 		
 		/*
 		 * Players

@@ -384,11 +384,16 @@ public class MainClient {
                         			if (type==TypesOfCards.YOUTUBER){
                         				GameFrame.lastAdvCard=new Card(name, type, new InfosYoutuber(followers,
                         						rts, hearts, theme, grade, id_power), path, id);
+                        				GameFrame.logs.add("<html><font color=red>"+GameFrame.Adversaire.getName()+"</font> pose"
+                            					+ " <font color=black>"+GameFrame.lastAdvCard.getName()+"</font></html>");
                         			}else if(type==TypesOfCards.SPECIALE){
                         				GameFrame.lastAdvCard=new Card(name, type, new InfosSpeciale(followers,
                         						grade, id_power), path, id);
+                        				GameFrame.logs.add("<html><font color=red>"+GameFrame.Adversaire.getName()+"</font> pose"
+                            					+ " <font color=red>"+GameFrame.lastAdvCard.getName()+"</font></html>");
                         			}
-					
+                        			
+                        			
         							if (GameFrame.lastAdvCard.getType().equals(TypesOfCards.YOUTUBER)){						
         								
         								GameFrame.twiitListCard.add(GameFrame.lastAdvCard);
@@ -424,7 +429,16 @@ public class MainClient {
                         					break;
                         				}
                         			}
-                        		}else if(line.startsWith("views")){
+                        		}else if(line.startsWith("combat")){
+                        			Card A = GameFrame.twiitListCard.get(Integer.valueOf(contains[1]));
+                        			Card B = GameFrame.twiitListCard.get(Integer.valueOf(contains[2]));
+                        			GameFrame.logs.add("<html>Attack entre <font color=black>"+A.getName()+" ("+A.getInfos().getRts()+"/"+A.getInfos().getHearts()
+                        					+")</font> et"
+                        					+ " <font color=black>"+B.getName()+" ("+B.getInfos().getRts()+"/"+B.getInfos().getHearts()
+                        					+")</font></html>");
+                        			GameFrame.UpdateDisplayLogs();
+                        		}
+                        		else if(line.startsWith("views")){
                         			int views = Integer.valueOf(contains[2]);
                         			Thread th = new Thread(new GameFrame.AnimationViewsThread(Integer.valueOf(contains[1]), views));
                         			th.start();
