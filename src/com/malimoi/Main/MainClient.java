@@ -37,6 +37,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.Random;
 
 public class MainClient {
 	public static String version = "Alpha 0.2";
@@ -57,6 +58,13 @@ public class MainClient {
 	 * CONSTANT
 	 */
 	public static final String[] THEMES_IMAGES_PATH = {"HUMOUR.png","STYLE.png","SPORT.png","MUSIQUE.png","GAMING.png","EDUCATION.png"};
+	public static final String[] TWIIT_CONTENTS = {"La dernière vidéo de @NAME est mon coup de coeur :)","<font color=[COLOR]>#Prometteur</font> En voila du talent : [LINK]",
+			"J'ai bien aimé ta vidéo @NAME !","A VOIR !! [LINK] Bravo au créateur !","Après une belle trouvaille en bourse, voici une bonne vidéo de @NAME !",
+			"J'ai adoré ! [LINK]","Lui devriendra riche grâce à ses vidéos : @NAME","Hello ! Je viens de tomber sur une bonne vidéo [LINK]",
+			"Pas mauvais du tout : [LINK]","Voici un bon vidéaste que je viens de découvirir: @NAME","Pas mal ta dernière vidéo @NAME",
+			"WHAOU ! Du talent dans la dernière vidéo de @NAME","Félicitation @NAME pour ta dernière vidéo <font color=[COLOR]>#AReFaire</font>",
+			"Go check la vidéo de @NAME !","Bravo à @NAME pour sa dernière vidéo !","Formidable [LINK]","Du génie [LINK]","Go check : [LINK]",
+			"Jamais rien vu d'aussi merveilleux [LINK]", "@NAME : bien ta dernière vidéo elle déchire ;) <font color=[COLOR]>#GG</fon>"};
 	
 	/*
 	 * Variables players
@@ -66,36 +74,38 @@ public class MainClient {
 	    			TypesOfThemes.VIEPRATIQUE_STYLE_BEAUTE, Grades.BASE, 0), "images/cards/Amandine Cuisine.png", 1),
 	    	new Card("Anthony-Fitness", TypesOfCards.YOUTUBER, new InfosYoutuber(350, 5, 2, TypesOfThemes.SPORT, Grades.BASE, 0),
 	    			"images/cards/Anthony-Fitness.png", 2),
-	    	new Card("Aurélie Testenbeauté", TypesOfCards.YOUTUBER, new InfosYoutuber(250, 2, 3, 
-	    			TypesOfThemes.VIEPRATIQUE_STYLE_BEAUTE, Grades.BASE, 0), "images/cards/Aurélie Testenbeauté.png", 3),
+	    	new Card("Aurelie Testenbeaut", TypesOfCards.YOUTUBER, new InfosYoutuber(250, 2, 3,
+	    			TypesOfThemes.VIEPRATIQUE_STYLE_BEAUTE, Grades.BASE, 0), "images/cards/Aurlie Testenbeaut.png", 3),
 	    	new Card("Boost vues 5k", TypesOfCards.SPECIALE, new InfosSpeciale(400, Grades.BASE, 1),
 	    			"images/cards/Boost vues 5k.png", 4),
-	    	new Card("CAPTAIN WORKOUT", TypesOfCards.YOUTUBER, new InfosYoutuber(450, 7, 2, TypesOfThemes.SPORT, Grades.BASE, 0),
+	    	new Card("CAPTAIN WORKOUT", TypesOfCards.YOUTUBER, new InfosYoutuber(450, 7, 2,
+	    			TypesOfThemes.SPORT, Grades.BASE, 0),
 	    			"images/cards/CAPTAIN WORKOUT.png", 5),
-	    	new Card("Cédric Froment", TypesOfCards.YOUTUBER, new InfosYoutuber(300, 3, 3, TypesOfThemes.EDUCATION, Grades.BASE, 0),
-	    			"images/cards/Cédric Froment.png", 6),
-	    	new Card("Ellen LC", TypesOfCards.YOUTUBER, new InfosYoutuber(250, 1, 4, 
+	    	new Card("Cedric Froment", TypesOfCards.YOUTUBER, new InfosYoutuber(300, 3, 3,
+	    			TypesOfThemes.EDUCATION, Grades.BASE, 0),
+	    			"images/cards/Cdric Froment.png", 6),
+	    	new Card("Ellen LC", TypesOfCards.YOUTUBER, new InfosYoutuber(250, 1, 4,
 	    			TypesOfThemes.VIEPRATIQUE_STYLE_BEAUTE, Grades.BASE, 0), "images/cards/Ellen LC.png", 7),
-	    	new Card("Esprit Riche", TypesOfCards.YOUTUBER, new InfosYoutuber(200, 2, 2, 
+	    	new Card("Esprit Riche", TypesOfCards.YOUTUBER, new InfosYoutuber(200, 2, 2,
 	    			TypesOfThemes.EDUCATION, Grades.BASE, 0), "images/cards/Esprit Riche.png", 8),
-	    	new Card("Flomars", TypesOfCards.YOUTUBER, new InfosYoutuber(450, 2, 7, 
+	    	new Card("Flomars", TypesOfCards.YOUTUBER, new InfosYoutuber(450, 2, 7,
 	    			TypesOfThemes.GAMING, Grades.BASE, 0), "images/cards/Flomars.png", 9),
-	    	new Card("FrankCotty", TypesOfCards.YOUTUBER, new InfosYoutuber(350, 3, 4, 
+	    	new Card("FrankCotty", TypesOfCards.YOUTUBER, new InfosYoutuber(350, 3, 4,
 	    			TypesOfThemes.MUSIQUE, Grades.BASE, 0), "images/cards/FrankCotty.png", 10),
 	    	new Card("Delete user gamma", TypesOfCards.SPECIALE, new InfosSpeciale(650, Grades.BASE, 2),
 	    			"images/cards/Delete user gamma.png", 11),
-	    	new Card("Double ♥", TypesOfCards.SPECIALE, new InfosSpeciale(650, Grades.BASE, 3),
-	    			"images/cards/Double ♥.png", 12),
+	    	new Card("Double Hearts", TypesOfCards.SPECIALE, new InfosSpeciale(650, Grades.BASE, 3),
+	    			"images/cards/Double Hearts.png", 12),
 	    	new Card("Double RTs", TypesOfCards.SPECIALE, new InfosSpeciale(650, Grades.BASE, 4),
 	    			"images/cards/Double RTs.png", 13),
 	    	new Card("Fred deBeauxArts", TypesOfCards.YOUTUBER, new InfosYoutuber(300, 3, 3, 
 	    			TypesOfThemes.VIEPRATIQUE_STYLE_BEAUTE, Grades.BASE, 0), "images/cards/Fred deBeauxArts.png", 14),
-	    	new Card("Gadu Gaming", TypesOfCards.YOUTUBER, new InfosYoutuber(350, 3, 4, 
+	    	new Card("Gadu Gaming", TypesOfCards.YOUTUBER, new InfosYoutuber(350, 4, 3,
 	    			TypesOfThemes.GAMING, Grades.BASE, 0), "images/cards/Gadu Gaming.png", 15),
-	    	new Card("JeanFaitTrop", TypesOfCards.YOUTUBER, new InfosYoutuber(350, 4, 3, 
+	    	new Card("JeanFaitTrop", TypesOfCards.YOUTUBER, new InfosYoutuber(350, 4, 3,
 	    			TypesOfThemes.HUMOUR_DIVERTISSEMENT, Grades.BASE, 0), "images/cards/JeanFaitTrop.png", 16),
-	    	new Card("Léonard", TypesOfCards.YOUTUBER, new InfosYoutuber(300, 2, 4, 
-	    			TypesOfThemes.HUMOUR_DIVERTISSEMENT, Grades.BASE, 0), "images/cards/Léonard.png", 17),
+	    	new Card("Leonard", TypesOfCards.YOUTUBER, new InfosYoutuber(300, 2, 4,
+	    			TypesOfThemes.HUMOUR_DIVERTISSEMENT, Grades.BASE, 0), "images/cards/Lonard.png", 17),
 	    	new Card("Loulou", TypesOfCards.YOUTUBER, new InfosYoutuber(400, 3, 5, 
 	    			TypesOfThemes.HUMOUR_DIVERTISSEMENT, Grades.BASE, 0), "images/cards/Loulou.png", 18),
 	    	new Card("Monte Le Son", TypesOfCards.YOUTUBER, new InfosYoutuber(150, 1, 2, 
@@ -122,7 +132,7 @@ public class MainClient {
 	    			TypesOfThemes.HUMOUR_DIVERTISSEMENT, Grades.BASE, 0), "images/cards/ZORKA.png", 29) };
 	
 	public static List<Card> playerCards = new ArrayList<Card>();
-	public static Player player = new Player("Kevin", "#01FE12", 1, 1, new ArrayList<Card>(), new ArrayList<Card>());
+	public static Player player = new Player("Namde", 3, 1, 1, new ArrayList<Card>(), new ArrayList<Card>());
 	public static Boolean canPlay = false;
 	
 	/*
@@ -293,7 +303,7 @@ public class MainClient {
                         			
                         			String[] s = line.split(" ");
                         			GameFrame.advTrouve=true;
-                        			GameFrame.StartGame(new Player(s[1], s[2], Integer.valueOf(s[3]), Integer.valueOf(s[4]),
+                        			GameFrame.StartGame(new Player(s[1], Integer.valueOf(s[2]), Integer.valueOf(s[3]), Integer.valueOf(s[4]),
                         					new ArrayList<Card>(), new ArrayList<Card>()));	
                         			if (Integer.valueOf(s[5]).equals(0)){
                         				canPlay=true;
@@ -322,6 +332,7 @@ public class MainClient {
                 						followers = Integer.valueOf(containsVir[3]);
                     					rts = Integer.valueOf(containsVir[4]);
                     					hearts = Integer.valueOf(containsVir[5]);
+                    					
                     					theme = getThemesFile(containsVir[6]);
                     					grade = getGradesFile(containsVir[7]);
                     					id_power = Integer.valueOf(containsVir[8]);
@@ -347,10 +358,7 @@ public class MainClient {
                      			
                         			GameFrame.PrepareUpdate();
                         			
-                        		}else if(line.startsWith("pose")){
-                        			GameFrame.twiit_list.clear();
-                        			GameFrame.cards_list.clear();
-                        			
+                        		}else if(line.startsWith("pose")){                        			
                         			String name = containsVir[2];
                 					TypesOfCards type = getTypesOfCardsFile(containsVir[3]);
                 					
@@ -368,6 +376,7 @@ public class MainClient {
                 						followers = Integer.valueOf(containsVir[4]);
                     					rts = Integer.valueOf(containsVir[5]);
                     					hearts = Integer.valueOf(containsVir[6]);
+                    					
                     					theme = getThemesFile(containsVir[7]);
                     					grade = getGradesFile(containsVir[8]);
                     					id_power = Integer.valueOf(containsVir[9]);
@@ -386,6 +395,7 @@ public class MainClient {
                         						rts, hearts, theme, grade, id_power), path, id);
                         				GameFrame.logs.add("<html><font color=red>"+GameFrame.Adversaire.getName()+"</font> pose"
                             					+ " <font color=black>"+GameFrame.lastAdvCard.getName()+"</font></html>");
+                        				
                         			}else if(type==TypesOfCards.SPECIALE){
                         				GameFrame.lastAdvCard=new Card(name, type, new InfosSpeciale(followers,
                         						grade, id_power), path, id);
@@ -393,22 +403,28 @@ public class MainClient {
                             					+ " <font color=red>"+GameFrame.lastAdvCard.getName()+"</font></html>");
                         			}
                         			
-                        			
         							if (GameFrame.lastAdvCard.getType().equals(TypesOfCards.YOUTUBER)){						
         								
+        								Random r = new Random();
         								GameFrame.twiitListCard.add(GameFrame.lastAdvCard);
         								GameFrame.twiitListPlayer.add(GameFrame.Adversaire);
+        								GameFrame.twiitListContent.add(TWIIT_CONTENTS[r.nextInt(TWIIT_CONTENTS.length)]);
         								
         							}
+        							
+        							
         							GameFrame.advFollowers=(int) (Integer.valueOf(line.split(",")[1]));
-        							GameFrame.content.removeAll();
-        							GameFrame.UpdateContent();
+        							GameFrame.nbFollowAdv.repaint();
+        							
+        							GameFrame.UpdateTwiits();
+
                         		}else if(line.startsWith("toursuivant")){
                         			canPlay=true;
                         			GameFrame.alreadyPlay.clear();
                         			access.send("pioche");
                         			GameFrame.specialMod=0;
                         			GameFrame.playerFollowers+=100;
+                        			GameFrame.specialMod=0;
                         			GameFrame.PrepareUpdate();
                         		}else if(line.startsWith("dammage")){ //pense a faire un plusieurs en 1
                         			int place = Integer.valueOf(contains[1]);
@@ -423,9 +439,11 @@ public class MainClient {
                         						 * Ne pas oublier d'enlever le player !!!
                         						 */
                         						GameFrame.twiitListPlayer.remove(i);
+                        						
+                        						GameFrame.twiitListContent.remove(i);
                         					}
 
-                        					GameFrame.PrepareUpdate();
+                        					GameFrame.UpdateTwiits();
                         					break;
                         				}
                         			}
@@ -442,6 +460,51 @@ public class MainClient {
                         			int views = Integer.valueOf(contains[2]);
                         			Thread th = new Thread(new GameFrame.AnimationViewsThread(Integer.valueOf(contains[1]), views));
                         			th.start();
+                        		}else if(line.startsWith("magic")){
+                        			
+                        			if (Integer.valueOf(contains[1]).equals(2)){
+                        				int place = Integer.valueOf(contains[2]);
+                        				
+                        				for (int i = 0; i < GameFrame.twiitListCard.size(); i++){
+                            				if (GameFrame.twiitListCard.get(place) == GameFrame.twiitListCard.get(i)){
+
+                            					GameFrame.twiitListCard.remove(i);
+                            					/*
+                            					* Ne pas oublier d'enlever le player !!!
+                            					 */
+                            					GameFrame.twiitListPlayer.remove(i);
+                            					GameFrame.twiitListContent.remove(i);
+
+                            					GameFrame.UpdateTwiits();
+                            					break;
+                            				}
+                            			}
+                        			}if (Integer.valueOf(contains[1]).equals(3)){
+                        				int place = Integer.valueOf(contains[2]);
+                        				for (int i = 0; i < GameFrame.twiitListCard.size(); i++){
+                            				if (GameFrame.twiitListCard.get(place) == GameFrame.twiitListCard.get(i)){
+
+                            					GameFrame.twiitListCard.get(i).getInfos().setHearts(
+                            							GameFrame.twiitListCard.get(i).getInfos().getHearts()*2);
+
+
+                            					GameFrame.UpdateTwiits();
+                            					break;
+                            				}
+                            			}
+                        			}if (Integer.valueOf(contains[1]).equals(4)){
+                        				int place = Integer.valueOf(contains[2]);
+                        				for (int i = 0; i < GameFrame.twiitListCard.size(); i++){
+                            				if (GameFrame.twiitListCard.get(place) == GameFrame.twiitListCard.get(i)){
+
+                            					GameFrame.twiitListCard.get(i).getInfos().setRts(
+                            							GameFrame.twiitListCard.get(i).getInfos().getRts()*2);
+
+                            					GameFrame.UpdateTwiits();
+                            					break;
+                            				}
+                            			}
+                        			}
                         		}
                         		//
                         	}

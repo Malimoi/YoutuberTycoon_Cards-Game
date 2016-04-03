@@ -21,7 +21,7 @@ public class InfosYoutuber extends Infos {
 		this.grade=grade;
 		this.id_power=id_power;
 	}
-	
+
 	@Override
 	public void setFollowers(int followers) {
 		this.followers = followers;

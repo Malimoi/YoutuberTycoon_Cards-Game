@@ -31,6 +31,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import com.malimoi.cards.Card;
+import com.malimoi.cards.enums.Grades;
 import com.malimoi.cards.enums.TypesOfCards;
 import com.malimoi.cards.enums.TypesOfThemes;
 import com.malimoi.players.Player;
@@ -62,7 +63,7 @@ public class GameFrame extends JFrame{
 	public static Card lastAdvCard = MainClient.cards_list[0];
 	
 	// -CONTENT
-	public static JPanel content = new AddImages("images/BACKGROUND1.jpg",LARGEUR,HAUTEUR);
+	public static JPanel content = new JPanel();
 	public static AddCards livePlayerCard = new AddCards("images/cards/DOS_DE_CARTE.png", 280, 403);
 	public static AddCards liveAdvCard = new AddCards("images/cards/DOS_DE_CARTE.png", 280, 403);
 	
@@ -72,8 +73,10 @@ public class GameFrame extends JFrame{
 	
 	public static List<JPanel> cards_list = new ArrayList<JPanel>();
 	public static List<ColorPanel> twiit_list = new ArrayList<ColorPanel>();
+	public static List<JPanel> backgroundList = new ArrayList<JPanel>();
 	public static List<Player> twiitListPlayer = new ArrayList<Player>();
 	public static final List<Card> twiitListCard = new ArrayList<Card>();
+	public static List<String> twiitListContent = new ArrayList<String>();
 	public static List<String> logs = new ArrayList<String>();
 	
 	public static JLabel msg_log1 = new JLabel();
@@ -99,6 +102,8 @@ public class GameFrame extends JFrame{
 	static JLabel apercuCard = new JLabel();
 	static JLabel nbViews1 = new JLabel();
 	static JLabel nbViews2 = new JLabel();
+	public static JLabel nbFollowPl = new JLabel();
+	public static JLabel nbFollowAdv = new JLabel();
 	
 	public static Card twiitSelect = null;
 	public static List<Card> alreadyPlay = new ArrayList<Card>();
@@ -107,14 +112,23 @@ public class GameFrame extends JFrame{
 	
 	public static Boolean poseTwiit = false;
 	
-	public static Color[] colorTab = {Color.RED,Color.YELLOW,Color.BLACK,Color.PINK,Color.GREEN,Color.BLUE,Color.ORANGE,Color.CYAN,Color.GRAY,Color.MAGENTA};
+	public static Color[] colorTabMulticolors = {Color.RED,Color.YELLOW,Color.BLACK,Color.PINK,Color.GREEN,Color.BLUE,Color.ORANGE,Color.CYAN,Color.GRAY,Color.MAGENTA};
 	public static Color[] colorTabOrange = {Color.decode("#E5B65A"),Color.decode("#E6B34D"),Color.decode("#E3AC3C"),Color.decode("#E3A832"),Color.decode("#E2A428"),
-			Color.decode("#E2A01B"),Color.decode("#E29C11"),Color.decode("#E29908")};
+			Color.decode("#E2A01B"),Color.decode("#E29C11"),Color.decode("#E29908"),Color.ORANGE};
 	public static Color[] colorTabGreen = {Color.decode("#77DF5C"),Color.decode("#6DDE51"),Color.decode("#63DC45"),Color.decode("#5CDB3C"),Color.decode("#55DB34"),
-			Color.decode("#4DD82B"),Color.decode("#46D921"),Color.decode("#3FD919")};
+			Color.decode("#4DD82B"),Color.decode("#46D921"),Color.decode("#3FD919"),Color.GREEN};
+	public static List<Color[]> listColors = new ArrayList<Color[]>();
+	public static String[] colorsString = {"black","orange","green"};
+	
+	public static boolean addViews = false;
+	
+	public static boolean end = false;
 	
 	public GameFrame(){
 		
+		listColors.add(colorTabMulticolors);
+		listColors.add(colorTabOrange);
+		listColors.add(colorTabGreen);
 		
 		Boolean size = true;
 		
@@ -124,7 +138,7 @@ public class GameFrame extends JFrame{
 		}
 		
 		content.setLayout(null);
-		content.setBackground(Color.decode("#838383"));
+		content.setBackground(new Color(245, 248, 250));
 		content.setPreferredSize(new Dimension(LARGEUR, HAUTEUR));
 		
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -172,7 +186,7 @@ public class GameFrame extends JFrame{
 			if (! (y>(HAUTEUR+100))){
 				JPanel carre = new JPanel();
 				carre.setBounds(x, y, 100, 100);
-				carre.setBackground(colorTabOrange[r.nextInt(colorTabOrange.length)]);
+				carre.setBackground(listColors.get(MainClient.player.getColor()-1)[r.nextInt(listColors.get(MainClient.player.getColor()-1).length)]);
 				rideau.add(carre);
 				carre.repaint();
 				total+=1;
@@ -198,17 +212,6 @@ public class GameFrame extends JFrame{
 		}
 		
 		note.setText("Adversaire trouvé !");
-		
-		for (int i = 0;i<HAUTEUR;i++){
-			rideau.setBounds(0, 0, LARGEUR, HAUTEUR-i);
-			rideau.repaint();
-			try {
-				Thread.sleep(2);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
 		
 		
 	}
@@ -245,6 +248,14 @@ public class GameFrame extends JFrame{
 					for (int a = 0;a<twiit_list.size();a++){
 						
 						if (t.equals(twiit_list.get(a))){
+							
+							if (specialMod>0){
+								if (specialMod==2){
+									if (twiitListPlayer.get(twiitListCard.size()-1-a)==Adversaire){
+										t.setColor(Color.decode("#E1E0E0"));
+									}
+								}
+							}
 							
 							if (twiitSelect == null){
 								if (twiitListPlayer.get(twiitListCard.size()-1-a)==MainClient.player){
@@ -296,74 +307,133 @@ public class GameFrame extends JFrame{
 				@Override
 				public void mousePressed(MouseEvent e){
 						
-					
-					
-					if (twiitSelect == null){
-						for (int a = 0;a<twiit_list.size();a++){
-							
-							if (t.equals(twiit_list.get(a))){
+					if (!addViews){
+						if (twiitSelect == null){
+							for (int a = 0;a<twiit_list.size();a++){
 								
-								if (twiitListPlayer.get(twiitListCard.size()-1-a)==MainClient.player){
-										if (specialMod>0){
-											if (specialMod==2){
+								if (t.equals(twiit_list.get(a))){
+									
+									if (twiitListPlayer.get(twiitListCard.size()-1-a)==MainClient.player){
+											if (specialMod>0){
+												/*
+												 * A rendre plus propre
+												 */
+												if (specialMod==2 && twiitListCard.get(twiitListCard.size()-1-a).getInfos().getGrade().equals(Grades.BASE)){
+													MainClient.access.send("magic 2 "+(twiitListCard.size()-1-a));
+													
+													twiitListCard.remove(twiitListCard.size()-1-a);
+													twiitListPlayer.remove(twiitListPlayer.size()-1-a);
+													twiitListContent.remove(twiitListContent.size()-1-a);
+													
+													UpdateTwiits();
+												}
+												if (specialMod==3){
+													MainClient.access.send("magic 3 "+(twiitListCard.size()-1-a));
+													
+													twiitListCard.get(twiitListCard.size()-1-a).getInfos().setHearts(
+															twiitListCard.get(twiitListCard.size()-1-a).getInfos().getHearts()*2);
+													
+													UpdateTwiits();
+												}
+												if (specialMod==4 && twiitListCard.get(twiitListCard.size()-1-a).getInfos().getGrade().equals(Grades.BASE)){
+													MainClient.access.send("magic 4 "+(twiitListCard.size()-1-a));
+													
+													twiitListCard.get(twiitListCard.size()-1-a).getInfos().setRts(
+															twiitListCard.get(twiitListCard.size()-1-a).getInfos().getRts()*2);
+													
+													UpdateTwiits();
+												}
 												
+												specialMod=0;
+												break;
+											}else{
+												boolean already = false;
+												for (int b = 0; b < alreadyPlay.size(); b++){
+													if (alreadyPlay.get(b).equals(twiitListCard.get(twiitListCard.size()-1-a))){
+														already=true;
+														break;
+													}
+												}
+												if(!already){
+													t.setColor(Color.decode("#B3FEB5"));
+													twiitSelect=twiitListCard.get(twiitListCard.size()-1-a);
+													
+												}
+												break;		
+											}
+												
+									}if (twiitListPlayer.get(twiitListCard.size()-1-a)==Adversaire){
+										if (specialMod>0){
+											/*
+											 * A rendre plus propre
+											 */
+											if (specialMod==2 && twiitListCard.get(twiitListCard.size()-1-a).getInfos().getGrade().equals(Grades.BASE)){
+												MainClient.access.send("magic 2 "+(twiitListCard.size()-1-a));
+												
+												twiitListCard.remove(twiitListCard.size()-1-a);
+												twiitListPlayer.remove(twiitListPlayer.size()-1-a);
+												twiitListContent.remove(twiitListContent.size()-1-a);
+												
+												UpdateTwiits();
+											}
+											if (specialMod==3 && twiitListCard.get(twiitListCard.size()-1-a).getInfos().getGrade().equals(Grades.BASE)){
+												MainClient.access.send("magic 3 "+(twiitListCard.size()-1-a));
+												
+												twiitListCard.get(twiitListCard.size()-1-a).getInfos().setHearts(
+														twiitListCard.get(twiitListCard.size()-1-a).getInfos().getHearts()*2);
+												
+												UpdateTwiits();
+											}
+											if (specialMod==4 && twiitListCard.get(twiitListCard.size()-1-a).getInfos().getGrade().equals(Grades.BASE)){
+												MainClient.access.send("magic 4 "+(twiitListCard.size()-1-a));
+												
+												twiitListCard.get(twiitListCard.size()-1-a).getInfos().setRts(
+														twiitListCard.get(twiitListCard.size()-1-a).getInfos().getRts()*2);
+												
+												UpdateTwiits();
 											}
 											
 											specialMod=0;
 											break;
-										}else{
-											boolean already = false;
-											for (int b = 0; b < alreadyPlay.size(); b++){
-												if (alreadyPlay.get(b).equals(twiitListCard.get(twiitListCard.size()-1-a))){
-													already=true;
-													break;
-												}
-											}
-											if(!already){
-												t.setColor(Color.decode("#B3FEB5"));
-												twiitSelect=twiitListCard.get(twiitListCard.size()-1-a);
-												
-											}
-											break;		
 										}
-											
-								}
-								
-								
-							}
-						}
-					}else{
-						for (int a = 0;a<twiit_list.size();a++){
-							
-							if (t.equals(twiit_list.get(a))){
-								if (twiitListPlayer.get(twiitListCard.size()-1-a)==MainClient.player){
-									if(twiitSelect==twiitListCard.get(twiitListCard.size()-1-a)){
-										twiitSelect=null;
-										t.setColor(Color.WHITE);
-										break;
 									}
+									
+									
 								}
+							}
+						}else{
+							for (int a = 0;a<twiit_list.size();a++){
 								
-								if (twiitListPlayer.get(twiitListCard.size()-1-a)==Adversaire){
-									for (int b = 0; b<twiitListCard.size(); b++){
-										if (twiitListCard.get(b).equals(twiitSelect) && twiitListPlayer.get(b).equals(MainClient.player)){
-											/*
-											 * Faire verif server
-											 */
-											MainClient.access.send("attack "+b+" "+(twiitListCard.size()-1-a));
-											System.out.println(twiitListCard.get(b).getName()+" attaque "+twiitListCard.get(twiitListCard.size()-1-a).getName());
-											alreadyPlay.add(twiitSelect);
+								if (t.equals(twiit_list.get(a))){
+									if (twiitListPlayer.get(twiitListCard.size()-1-a)==MainClient.player){
+										if(twiitSelect==twiitListCard.get(twiitListCard.size()-1-a)){
 											twiitSelect=null;
-											
+											t.setColor(Color.WHITE);
 											break;
 										}
 									}
 									
+									if (twiitListPlayer.get(twiitListCard.size()-1-a)==Adversaire){
+										for (int b = 0; b<twiitListCard.size(); b++){
+											if (twiitListCard.get(b).equals(twiitSelect) && twiitListPlayer.get(b).equals(MainClient.player)){
+												/*
+												 * Faire verif server
+												 */
+												MainClient.access.send("attack "+b+" "+(twiitListCard.size()-1-a));
+												System.out.println(twiitListCard.get(b).getName()+" attaque "+twiitListCard.get(twiitListCard.size()-1-a).getName());
+												alreadyPlay.add(twiitSelect);
+												twiitSelect=null;
+												
+												break;
+											}
+										}
+										
+									}
 								}
 							}
+							
 						}
-						
-					}
+					}		
 					
 				}
 			});
@@ -382,22 +452,56 @@ public class GameFrame extends JFrame{
 				profil.setBounds(10, 10, 50, 50);
 				t.add(profil);
 				JPanel rt = new AddImages("images/RT_GRAY.png", 20, 20);
+				boolean green = false;
+				
+				for (int a = 0 ; a < MainClient.cards_list.length ; a ++){
+					
+					if (MainClient.cards_list[a].getId() == twiitListCard.get(twiitListCard.size()-1-i).getId()){
+						if (twiitListCard.get(twiitListCard.size()-1-i).getInfos().getRts() > MainClient.cards_list[a].getInfos().getRts()){
+							rt = new AddImages("images/RT_GREEN.png", 20, 20);
+							green = true;
+							break;
+						}
+					}
+					
+				}
+				
 				rt.setBounds(TWIIT_WIDTH/5, TWIIT_HEIGHT-25, 20, 20);
 				t.add(rt);
 				JLabel NbRts = new JLabel();
 				NbRts.setFont(new Font("Tahoma", Font.PLAIN, 15));
 				NbRts.setText(twiitListCard.get(twiitListCard.size()-1-i).getInfos().getRts()+"");
 				NbRts.setForeground(Color.decode("#BDBDBD"));
+				if (green){
+					NbRts.setForeground(Color.decode("#05fe6e"));
+				}
 				NbRts.setHorizontalAlignment(JLabel.LEFT);
 				NbRts.setBounds(TWIIT_WIDTH/5+24, TWIIT_HEIGHT-25, 20, 20);
 				t.add(NbRts);
 				JPanel heart = new AddImages("images/HEART_GRAY.png", 20, 20);
+				boolean red = false;
+				
+				for (int a = 0 ; a < MainClient.cards_list.length ; a ++){
+					
+					if (MainClient.cards_list[a].getId() == twiitListCard.get(twiitListCard.size()-1-i).getId()){
+						if (twiitListCard.get(twiitListCard.size()-1-i).getInfos().getHearts() > MainClient.cards_list[a].getInfos().getHearts()){
+							heart = new AddImages("images/HEART_RED.png", 20, 20);
+							red= true;
+							break;
+						}
+					}
+					
+				}
+				
 				heart.setBounds(TWIIT_WIDTH/5+TWIIT_WIDTH/7, TWIIT_HEIGHT-25, 20, 20);
 				t.add(heart);
 				JLabel NbHearts = new JLabel();
 				NbHearts.setFont(new Font("Tahoma", Font.PLAIN, 15));
 				NbHearts.setText(twiitListCard.get(twiitListCard.size()-1-i).getInfos().getHearts()+"");
 				NbHearts.setForeground(Color.decode("#BDBDBD"));
+				if (red){
+					NbHearts.setForeground(Color.decode("#fe2452"));
+				}
 				NbHearts.setHorizontalAlignment(JLabel.LEFT);
 				NbHearts.setBounds(TWIIT_WIDTH/5+TWIIT_WIDTH/7+23, TWIIT_HEIGHT-25, 20, 20);
 				t.add(NbHearts);
@@ -410,10 +514,35 @@ public class GameFrame extends JFrame{
 				t.add(name);
 				JLabel msg_l1 = new JLabel();
 				msg_l1.setFont(new Font("Arial", Font.PLAIN, 15));
-				msg_l1.setText("Ceci est un message pour vous dire que j'adore les frites !");
+				Random r = new Random();
+				String message = "<html>"+twiitListContent.get(twiitListContent.size()-1-i);
+				if (twiitListPlayer.get(twiitListCard.size()-i-1).equals(MainClient.player)){
+					if (message.contains("@NAME")){
+						message = message.replace("@NAME", "<font color="+colorsString[MainClient.player.getColor()-1]+">@"+
+								MainClient.player.getName()+"</font>");
+					}
+					if (message.contains("[LINK]")){
+						message = message.replace("[LINK]", "<font color="+colorsString[MainClient.player.getColor()-1]+">youtu.be/3DqjMkVvumQ?a</font>");
+					}
+					if (message.contains("[COLOR]")){
+						message = message.replace("[COLOR]", colorsString[MainClient.player.getColor()-1]);
+					}
+				}else{
+					if (message.contains("@NAME")){
+						message = message.replace("@NAME", "<font color="+colorsString[MainClient.player.getColor()-1]+">@"+Adversaire.getName()+"</font>");
+					}
+					if (message.contains("[LINK]")){
+						message = message.replace("[LINK]", "<font color="+colorsString[MainClient.player.getColor()-1]+">youtu.be/R7s_Qqc45d?y</font>");
+					}
+					if (message.contains("[COLOR]")){
+						message = message.replace("[COLOR]", colorsString[MainClient.player.getColor()-1]);
+					}
+				}
+				message+="</html>";
+				msg_l1.setText(message);
 				msg_l1.setForeground(Color.DARK_GRAY);
 				msg_l1.setHorizontalAlignment(JLabel.LEFT);
-				msg_l1.setBounds(10+50+5, 30, TWIIT_WIDTH-65, 15);
+				msg_l1.setBounds(10+50+5, 30, TWIIT_WIDTH-65, 20);
 				t.add(msg_l1);
 			
 				twiit_list.add(t);
@@ -486,7 +615,8 @@ public class GameFrame extends JFrame{
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-		}	
+		}
+		GameFrame.addViews=false;
 		
 	}
 	
@@ -551,6 +681,7 @@ public class GameFrame extends JFrame{
 		content.add(liveAdvCard);
 		
 	}
+
 	
 	public static void UpdateTwiits(){
 		
@@ -564,6 +695,10 @@ public class GameFrame extends JFrame{
 	}
 	
 	public static void UpdateContent(){
+		
+		if (end){
+			
+		}
 		
 		for (int i = 0;i<MainClient.player.getHandCards().size();i++){
 			AddCards card = new AddCards(MainClient.player.getHandCards().get(i).getPath(), CARDS_WIDTH, CARDS_HEIGHT);
@@ -642,12 +777,39 @@ public class GameFrame extends JFrame{
 									
 									MainClient.access.send("pose "+MainClient.player.getHandCards().get(a).getId()+" "+playerFollowers);
 									
+									if (lastPlayerCard.getType().equals(TypesOfCards.SPECIALE)){
+										if (lastPlayerCard.getInfos().getId_power()==1){
+											Random r = new Random();
+											int proba = 50;
+											int chance = r.nextInt(100);
+											if ( !(proba > chance && playerFollowers < 
+													(lastPlayerCard.getInfos().getFollowers()/2) ) ){
+												
+												int views = 5000;
+												Thread th = new Thread(new AnimationViewsThread(1, views));
+												th.start();
+											}
+										}
+										if (lastPlayerCard.getInfos().getId_power()==2){
+											specialMod=2;
+										}
+										if (lastPlayerCard.getInfos().getId_power()==3){
+											specialMod=3;
+										}
+										if (lastPlayerCard.getInfos().getId_power()==4){
+											specialMod=4;
+										}
+									}
+									
+									
 									if (lastPlayerCard.getType().equals(TypesOfCards.YOUTUBER)){						
 										poseTwiit=true;
 										GameFrame.logs.add("<html><font color=blue>"+MainClient.player.getName()+"</font> pose"
                             					+ " <font color=black>"+GameFrame.lastPlayerCard.getName()+"</font></html>");
 										twiitListCard.add(lastPlayerCard);
 										twiitListPlayer.add(MainClient.player);
+										Random r = new Random();
+										twiitListContent.add(MainClient.TWIIT_CONTENTS[r.nextInt(MainClient.TWIIT_CONTENTS.length)]);
 										
 									}
 									
@@ -657,22 +819,47 @@ public class GameFrame extends JFrame{
 									cards_list.remove(a);
 									
 									UpdateTwiits();
+									
+									UpdateDisplayLogs();
+									
+									nbFollowPl.setText(""+playerFollowers);
+									nbFollowPl.repaint();
 									//content.removeAll();
 									
 									//UpdateContent();
 									
 								}else if( (lastPlayerCard.getInfos().getFollowers() / 2)<=playerFollowers && lastPlayerCard.getType().equals(TypesOfCards.SPECIALE)){
 									
+									
+									
+									playerFollowers=(int) (playerFollowers-lastPlayerCard.getInfos().getFollowers()/2);
+									
+									pointerCard = -1;
+									
+									cards_list.get(a).setBounds(0, 0, 0, 0);	
+									
 									MainClient.access.send("pose "+MainClient.player.getHandCards().get(a).getId()+" "+playerFollowers);
 									
 									if (lastPlayerCard.getInfos().getId_power()==2){
 										specialMod=2;
 									}
+									if (lastPlayerCard.getInfos().getId_power()==3){
+										specialMod=3;
+									}
 									
 									MainClient.player.getHandCards().remove(a);
 									
-									content.removeAll();
-									UpdateContent();
+									cards_list.get(a).repaint();
+									cards_list.remove(a);
+									
+									UpdateTwiits();
+									
+									UpdateDisplayLogs();
+									
+									nbFollowPl.setText(""+playerFollowers);
+									nbFollowPl.repaint();
+//									content.removeAll();
+//									UpdateContent();
 								}
 								
 							}		
@@ -791,7 +978,7 @@ public class GameFrame extends JFrame{
 			players_content.setLayout(null);
 			players_content.setBounds(LARGEUR/2 - TWIIT_WIDTH/2 - 10 - 300 + i*(300+2*10+TWIIT_WIDTH), 10, 300, 650);
 			
-			JPanel playerProfil = new ColorPanel(Color.decode(p.getColor()), false, 65, 65);
+			JPanel playerProfil = new ColorPanel(listColors.get(p.getColor()-1)[8], false, 65, 65);
 			playerProfil.setLayout(new BorderLayout());
 			playerProfil.setBounds(10, 10, 65, 65);
 			
@@ -817,12 +1004,18 @@ public class GameFrame extends JFrame{
 			follow.setForeground(Color.GRAY);
 			follow.setHorizontalAlignment(JLabel.LEFT);
 			follow.setBounds(10+65+5, 10+20+8, 300, 15);
-			JLabel nbFollow = new JLabel();
-			nbFollow.setFont(new Font("Tahoma", Font.PLAIN, 28));
-			nbFollow.setText(followers+"");
-			nbFollow.setForeground(Color.decode("#575757"));
-			nbFollow.setHorizontalAlignment(JLabel.LEFT);
-			nbFollow.setBounds(10+65+5, 30+17, 300, 34);
+			
+			nbFollowPl.setFont(new Font("Tahoma", Font.PLAIN, 28));
+			nbFollowPl.setText(playerFollowers+"");
+			nbFollowPl.setForeground(Color.decode("#575757"));
+			nbFollowPl.setHorizontalAlignment(JLabel.LEFT);
+			nbFollowPl.setBounds(10+65+5, 30+17, 300, 34);
+			
+			nbFollowAdv.setFont(new Font("Tahoma", Font.PLAIN, 28));
+			nbFollowAdv.setText(advFollowers+"");
+			nbFollowAdv.setForeground(Color.decode("#575757"));
+			nbFollowAdv.setHorizontalAlignment(JLabel.LEFT);
+			nbFollowAdv.setBounds(10+65+5, 30+17, 300, 34);
 			
 			final AddImages minia = new AddImages("images/miniatures/"+MainClient.THEMES_IMAGES_PATH[p.getThemeId()-1], 165, 95);
 			minia.setBounds(10, 30+17+28+25, 165, 95);
@@ -841,10 +1034,9 @@ public class GameFrame extends JFrame{
 				@Override
 				public void mousePressed(MouseEvent e){
 					if (twiitSelect!=null){
-						int views = twiitSelect.getInfos().getRts()*1000*2;
-						Thread th = new Thread(new AnimationViewsThread(1, views));
-						th.start();
+						int views = twiitSelect.getInfos().getRts()*1000*2; //be careful
 						
+						addViews=true;
 						MainClient.access.send("views "+views);
 						
 						minia.redefine(165, 95);
@@ -853,7 +1045,6 @@ public class GameFrame extends JFrame{
 						alreadyPlay.add(twiitSelect);
 						twiitSelect=null;
 						
-//						PrepareUpdate();
 					}
 				}
 			});
@@ -890,7 +1081,12 @@ public class GameFrame extends JFrame{
 			players_content.add(playerProfil);
 			players_content.add(name);
 			players_content.add(follow);
-			players_content.add(nbFollow);
+			if (i==0){
+				players_content.add(nbFollowPl);
+			}else{
+				players_content.add(nbFollowAdv);
+			}
+			
 			players_content.add(minia);
 			players_content.add(viewsImg);
 			players_content.add(nbViewslab);	

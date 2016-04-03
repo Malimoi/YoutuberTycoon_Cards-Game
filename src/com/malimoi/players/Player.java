@@ -9,13 +9,13 @@ import com.malimoi.cards.Card;
 public class Player {
 	
 	private String name;
-	private String color;
+	private int color;
 	private int rang;
 	private int themeId;
 	private List<Card> cards;
 	private List<Card> handCards;
 	
-	public Player(String name, String color, int rang, int themeId, List<Card> cards, List<Card> handCards){
+	public Player(String name, int color, int rang, int themeId, List<Card> cards, List<Card> handCards){
 		this.name=name;
 		this.color=color;
 		this.rang=rang;
@@ -50,11 +50,11 @@ public class Player {
 		MainClient.access.send("themeid "+themeId);
 	}
 
-	public String getColor() {
+	public int getColor() {
 		return color;
 	}
 
-	public void setColor(String color) {
+	public void setColor(int color) {
 		this.color = color;
 	}
 
